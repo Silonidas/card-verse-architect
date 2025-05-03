@@ -1,7 +1,6 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Cards, LayoutGrid, Search } from "lucide-react";
+import { BookOpen, Library, LayoutGrid, Search } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
     { path: "/browse", label: "Browse", icon: <Search className="h-5 w-5" /> },
     { path: "/decks", label: "Decks", icon: <BookOpen className="h-5 w-5" /> },
-    { path: "/collection", label: "Collection", icon: <Cards className="h-5 w-5" /> },
+    { path: "/collection", label: "Collection", icon: <Library className="h-5 w-5" /> },
   ];
 
   return (
@@ -24,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
             <Link to="/" className="flex items-center space-x-2">
-              <Cards className="h-6 w-6 text-primary" />
+              <Library className="h-6 w-6 text-primary" />
               <span className="font-bold text-xl">CardVerse</span>
             </Link>
           </div>

@@ -1,11 +1,10 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { sampleCards, sampleDecks } from "@/data/sampleCards";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Layout from "@/components/Layout";
-import { BookOpen, Search, Cards, LayoutGrid } from "lucide-react";
+import { BookOpen, Search, Library, LayoutGrid } from "lucide-react";
 import CardItem from "@/components/CardItem";
 
 const Index = () => {
@@ -34,7 +33,7 @@ const Index = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Cards</CardTitle>
-              <Cards className="h-4 w-4 text-muted-foreground" />
+              <Library className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalCards}</div>
@@ -137,7 +136,7 @@ const Index = () => {
             <Link to="/collection" className="no-underline">
               <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
                 <CardHeader>
-                  <Cards className="h-8 w-8 text-primary mb-2" />
+                  <Library className="h-8 w-8 text-primary mb-2" />
                   <CardTitle>Collection</CardTitle>
                 </CardHeader>
                 <CardContent>
