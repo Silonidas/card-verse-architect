@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				tcg: {
+					purple: '#8B5CF6',
+					blue: '#3B82F6',
+					teal: '#2DD4BF',
+					indigo: '#6366F1',
+					darkblue: '#1E293B',
+					lightgray: '#F1F5F9',
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,16 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'card-hover': {
+					'0%': { transform: 'translateY(0)' },
+					'100%': { transform: 'translateY(-8px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'card-hover': 'card-hover 0.3s ease-out forwards'
 			}
 		}
 	},

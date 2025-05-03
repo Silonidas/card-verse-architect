@@ -1,0 +1,77 @@
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { BookOpen, Cards, LayoutGrid, Search } from "lucide-react";
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  
+  const navItems = [
+    { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
+    { path: "/browse", label: "Browse", icon: <Search className="h-5 w-5" /> },
+    { path: "/decks", label: "Decks", icon: <BookOpen className="h-5 w-5" /> },
+    { path: "/collection", label: "Collection", icon: <Cards className="h-5 w-5" /> },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center">
+          <div className="mr-4 flex">
+            <Link to="/" className="flex items-center space-x-2">
+              <Cards className="h-6 w-6 text-primary" />
+              <span className="font-bold text-xl">CardVerse</span>
+            </Link>
+          </div>
+          <div className="flex flex-1 items-center justify-end space-x-4">
+            <nav className="hidden md:flex items-center space-x-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-primary ${
+                    location.pathname === item.path
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 container py-6">{children}</main>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+        <div className="grid grid-cols-4 h-16">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center justify-center space-y-1 ${
+                location.pathname === item.path
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {item.icon}
+              <span className="text-xs">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+export default Layout;
