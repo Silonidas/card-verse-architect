@@ -13,17 +13,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CardType } from "@/types";
+import { Card } from "@/types";
 
 const CardBrowser = () => {
-  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
   const [sortBy, setSortBy] = useState("name");
 
-  const handleCardClick = (card: CardType) => {
+  const handleCardClick = (card: Card) => {
     setSelectedCard(card);
     setIsCardDetailOpen(true);
   };
