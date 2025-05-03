@@ -17,13 +17,13 @@ import { Badge } from "@/components/ui/badge";
 
 const Collection = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("");
-  const [filterRarity, setFilterRarity] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterRarity, setFilterRarity] = useState("all");
 
   const filteredCards = sampleCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === "" || card.type === filterType;
-    const matchesRarity = filterRarity === "" || card.rarity === filterRarity;
+    const matchesType = filterType === "all" || card.type === filterType;
+    const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
     return matchesSearch && matchesType && matchesRarity;
   });
 
@@ -96,7 +96,7 @@ const Collection = () => {
               <SelectValue placeholder="Card Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               {cardTypes.map((type) => (
                 <SelectItem key={type} value={type} className="capitalize">
                   {type}
@@ -109,7 +109,7 @@ const Collection = () => {
               <SelectValue placeholder="Rarity" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Rarities</SelectItem>
+              <SelectItem value="all">All Rarities</SelectItem>
               {rarities.map((rarity) => (
                 <SelectItem key={rarity} value={rarity} className="capitalize">
                   {rarity}
@@ -133,8 +133,8 @@ const Collection = () => {
             variant="link"
             onClick={() => {
               setSearchTerm("");
-              setFilterType("");
-              setFilterRarity("");
+              setFilterType("all");
+              setFilterRarity("all");
             }}
           >
             Clear filters
