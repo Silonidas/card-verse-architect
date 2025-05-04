@@ -1,5 +1,5 @@
 
-import { Card } from "@/types";
+import { Card, CardRarity } from "@/types";
 
 const DIGIMON_API_BASE_URL = "https://digimon-api.vercel.app/api/digimon";
 
@@ -18,7 +18,7 @@ const mapDigimonToCard = (digimon: any): Card => {
 };
 
 // Map Digimon levels to card rarities
-const mapLevelToRarity = (level: string): string => {
+const mapLevelToRarity = (level: string): CardRarity => {
   switch (level) {
     case "Rookie":
       return "common";
