@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sampleCards } from "@/data/sampleCards";
 import CardItem from "./CardItem";
+import CardDetail from "./CardDetail";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Database } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,35 +13,79 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Card as CardUI, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/types";
+import { fetchAllDigimon } from "@/services/digimonApi";
+import { toast } from "@/hooks/use-toast";
 
 const Collection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
+  const [dataSource, setDataSource] = useState<"sample" | "digimon">("sample");
+  const [allCards, setAllCards] = useState<Card[]>(sampleCards);
+  const [loading, setLoading] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
 
-  const filteredCards = sampleCards.filter((card) => {
+  useEffect(() => {
+    if (dataSource === "sample") {
+      setAllCards(sampleCards);
+    }
+  }, [dataSource]);
+
+  const handleFetchDigimon = async () => {
+    setLoading(true);
+    try {
+      const digimonCards = await fetchAllDigimon();
+      setAllCards(digimonCards);
+      setDataSource("digimon");
+      toast({
+        title: "Success",
+        description: `Loaded ${digimonCards.length} Digimon cards`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load Digimon cards",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCardClick = (card: Card) => {
+    setSelectedCard(card);
+    setIsCardDetailOpen(true);
+  };
+
+  const closeCardDetail = () => {
+    setIsCardDetailOpen(false);
+  };
+
+  const filteredCards = allCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
     return matchesSearch && matchesType && matchesRarity;
   });
 
-  const totalCards = sampleCards.reduce((sum, card) => sum + card.quantity, 0);
-  const uniqueCards = sampleCards.length;
-  const estimatedValue = sampleCards.reduce(
+  const totalCards = allCards.reduce((sum, card) => sum + card.quantity, 0);
+  const uniqueCards = allCards.length;
+  const estimatedValue = allCards.reduce(
     (sum, card) => sum + (card.price || 0) * card.quantity,
     0
   );
 
-  const cardTypes = Array.from(new Set(sampleCards.map((card) => card.type)));
-  const rarities = Array.from(new Set(sampleCards.map((card) => card.rarity)));
+  const cardTypes = Array.from(new Set(allCards.map((card) => card.type)));
+  const rarities = Array.from(new Set(allCards.map((card) => card.rarity)));
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
+        <CardUI>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Total Cards</CardTitle>
           </CardHeader>
@@ -50,8 +95,8 @@ const Collection = () => {
               {uniqueCards} unique cards
             </p>
           </CardContent>
-        </Card>
-        <Card>
+        </CardUI>
+        <CardUI>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Collection Value</CardTitle>
           </CardHeader>
@@ -61,8 +106,8 @@ const Collection = () => {
               Estimated market value
             </p>
           </CardContent>
-        </Card>
-        <Card>
+        </CardUI>
+        <CardUI>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Rarity Breakdown</CardTitle>
           </CardHeader>
@@ -73,11 +118,11 @@ const Collection = () => {
                 variant="outline"
                 className="capitalize"
               >
-                {rarity}: {sampleCards.filter(c => c.rarity === rarity).reduce((sum, card) => sum + card.quantity, 0)}
+                {rarity}: {allCards.filter(c => c.rarity === rarity).reduce((sum, card) => sum + card.quantity, 0)}
               </Badge>
             ))}
           </CardContent>
-        </Card>
+        </CardUI>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
@@ -90,7 +135,7 @@ const Collection = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Card Type" />
@@ -117,13 +162,34 @@ const Collection = () => {
               ))}
             </SelectContent>
           </Select>
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2"
+            onClick={handleFetchDigimon}
+            disabled={loading}
+          >
+            <Database className="h-4 w-4" />
+            {loading ? "Loading..." : "Load Digimon Cards"}
+          </Button>
+          {dataSource === "digimon" && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDataSource("sample");
+                setFilterType("all");
+                setFilterRarity("all");
+              }}
+            >
+              Switch to Sample Cards
+            </Button>
+          )}
         </div>
       </div>
 
       {filteredCards.length > 0 ? (
         <div className="card-grid">
           {filteredCards.map((card) => (
-            <CardItem key={card.id} card={card} />
+            <CardItem key={card.id} card={card} onClick={() => handleCardClick(card)} />
           ))}
         </div>
       ) : (
@@ -141,6 +207,12 @@ const Collection = () => {
           </Button>
         </div>
       )}
+
+      <CardDetail
+        card={selectedCard}
+        isOpen={isCardDetailOpen}
+        onClose={closeCardDetail}
+      />
     </div>
   );
 };
