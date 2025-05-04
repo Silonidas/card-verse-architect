@@ -5,16 +5,32 @@ const DIGIMON_API_BASE_URL = "https://digimon-api.vercel.app/api/digimon";
 
 // Transform a Digimon API response into our Card type
 const mapDigimonToCard = (digimon: any): Card => {
+  // Check if the image URL is valid
+  const imageUrl = isValidImageUrl(digimon.img) 
+    ? digimon.img 
+    : `https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=300&auto=format`;
+
   return {
     id: `digimon-${digimon.name.toLowerCase().replace(/\s+/g, '-')}`,
     name: digimon.name,
-    imageUrl: digimon.img,
+    imageUrl: imageUrl,
     type: digimon.level.toLowerCase(),
     rarity: mapLevelToRarity(digimon.level),
     set: "Digimon Card Collection",
     description: `Level: ${digimon.level}`,
     quantity: 1
   };
+};
+
+// Helper function to check if an image URL is likely to be valid
+const isValidImageUrl = (url: string): boolean => {
+  // Check if the URL ends with common image extensions
+  const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+  const lowercaseUrl = url.toLowerCase();
+  return validExtensions.some(ext => lowercaseUrl.endsWith(ext)) && 
+         !lowercaseUrl.includes('placeholder') &&
+         !lowercaseUrl.includes('undefined') &&
+         url.startsWith('http');
 };
 
 // Map Digimon levels to card rarities
