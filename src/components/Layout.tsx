@@ -1,6 +1,15 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Library, LayoutGrid, Search } from "lucide-react";
+import { BookOpen, Library, LayoutGrid, Search, ChevronDown } from "lucide-react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { TCGType } from "../types";
+import { Button } from "@/components/ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +17,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Magic: The Gathering");
   
   const navItems = [
     { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
@@ -16,16 +26,48 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: "/collection", label: "Collection", icon: <Library className="h-5 w-5" /> },
   ];
 
+  const tcgOptions: TCGType[] = [
+    "Magic: The Gathering",
+    "Pokemon",
+    "Yu-Gi-Oh",
+    "Flesh and Blood",
+    "Lorcana"
+  ];
+
+  const handleTCGChange = (tcg: TCGType) => {
+    setCurrentTCG(tcg);
+    // You could dispatch an event or use context to notify other components
+    const event = new CustomEvent('tcgChanged', { detail: tcg });
+    window.dispatchEvent(event);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
-            <Link to="/" className="flex items-center space-x-2">
-              <Library className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl">CardVerse</span>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2 px-0 hover:bg-transparent">
+                  <Library className="h-6 w-6 text-primary" />
+                  <span className="font-bold text-xl">CardVerse</span>
+                  <span className="text-xs text-muted-foreground">({currentTCG})</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {tcgOptions.map((tcg) => (
+                  <DropdownMenuItem 
+                    key={tcg} 
+                    onClick={() => handleTCGChange(tcg)}
+                    className={tcg === currentTCG ? "bg-muted" : ""}
+                  >
+                    <span className="font-medium">{tcg}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
             <nav className="hidden md:flex items-center space-x-4">

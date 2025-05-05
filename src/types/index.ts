@@ -12,6 +12,8 @@ export type CardType =
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 
+export type TCGType = "Magic: The Gathering" | "Pokemon" | "Yu-Gi-Oh" | "Flesh and Blood" | "Lorcana";
+
 export interface Card {
   id: string;
   name: string;
@@ -19,6 +21,7 @@ export interface Card {
   type: CardType;
   rarity: CardRarity;
   set: string;
+  tcg?: TCGType;
   manaCost?: string;
   description?: string;
   power?: string;

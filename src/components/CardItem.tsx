@@ -1,6 +1,6 @@
 
-import React from "react";
-import { Card as CardType, CardCondition } from "../types";
+import React, { useEffect, useState } from "react";
+import { Card as CardType, CardCondition, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
 
 interface CardItemProps {
@@ -45,7 +45,39 @@ const getConditionColor = (condition: CardCondition | undefined) => {
   }
 };
 
+const getTcgBadgeStyle = (tcg: TCGType | undefined) => {
+  switch (tcg) {
+    case "Magic: The Gathering":
+      return "bg-purple-600";
+    case "Pokemon":
+      return "bg-yellow-500";
+    case "Yu-Gi-Oh":
+      return "bg-blue-600";
+    case "Flesh and Blood":
+      return "bg-red-600";
+    case "Lorcana":
+      return "bg-cyan-500";
+    default:
+      return "bg-gray-500";
+  }
+};
+
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Magic: The Gathering");
+
+  useEffect(() => {
+    const handleTCGChange = (event: Event) => {
+      const customEvent = event as CustomEvent<TCGType>;
+      setCurrentTCG(customEvent.detail);
+    };
+
+    window.addEventListener('tcgChanged', handleTCGChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
+    };
+  }, []);
+
   return (
     <div 
       className={`${compact ? 'deck-card' : 'card-item'} cursor-pointer relative group`}
@@ -69,6 +101,14 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         <div className="absolute top-10 right-2 z-10">
           <Badge variant="secondary" className={`${getConditionColor(card.condition)} text-white capitalize`}>
             {card.condition}
+          </Badge>
+        </div>
+      )}
+
+      {!compact && card.tcg && card.tcg !== currentTCG && (
+        <div className="absolute top-18 right-2 z-10">
+          <Badge variant="secondary" className={`${getTcgBadgeStyle(card.tcg)} text-white`}>
+            {card.tcg}
           </Badge>
         </div>
       )}
