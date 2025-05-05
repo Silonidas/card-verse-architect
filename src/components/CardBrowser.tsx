@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { sampleCards } from "@/data/sampleCards";
 import CardItem from "./CardItem";
 import CardDetail from "./CardDetail";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Database } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,8 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/types";
-import { fetchAllDigimon } from "@/services/digimonApi";
-import { toast } from "@/hooks/use-toast";
 
 const CardBrowser = () => {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -24,36 +22,7 @@ const CardBrowser = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
   const [sortBy, setSortBy] = useState("name");
-  const [dataSource, setDataSource] = useState<"sample" | "digimon">("sample");
-  const [allCards, setAllCards] = useState<Card[]>(sampleCards);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (dataSource === "sample") {
-      setAllCards(sampleCards);
-    }
-  }, [dataSource]);
-
-  const handleFetchDigimon = async () => {
-    setLoading(true);
-    try {
-      const digimonCards = await fetchAllDigimon();
-      setAllCards(digimonCards);
-      setDataSource("digimon");
-      toast({
-        title: "Success",
-        description: `Loaded ${digimonCards.length} Digimon cards`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load Digimon cards",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [allCards] = useState<Card[]>(sampleCards);
 
   const handleCardClick = (card: Card) => {
     setSelectedCard(card);
@@ -137,27 +106,6 @@ const CardBrowser = () => {
               <SelectItem value="rarity">Rarity</SelectItem>
             </SelectContent>
           </Select>
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2"
-            onClick={handleFetchDigimon}
-            disabled={loading}
-          >
-            <Database className="h-4 w-4" />
-            {loading ? "Loading..." : "Load Digimon Cards"}
-          </Button>
-          {dataSource === "digimon" && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setDataSource("sample");
-                setFilterType("all");
-                setFilterRarity("all");
-              }}
-            >
-              Switch to Sample Cards
-            </Button>
-          )}
         </div>
       </div>
 
