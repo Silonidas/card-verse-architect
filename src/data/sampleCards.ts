@@ -1,4 +1,3 @@
-
 import { Card, Deck } from "../types";
 
 export const sampleCards: Card[] = [
@@ -14,7 +13,8 @@ export const sampleCards: Card[] = [
     power: "4",
     toughness: "4",
     price: 15.99,
-    quantity: 2
+    quantity: 2,
+    condition: "near mint"
   },
   {
     id: "2",
@@ -26,7 +26,8 @@ export const sampleCards: Card[] = [
     manaCost: "UU",
     description: "Counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
     price: 3.50,
-    quantity: 4
+    quantity: 4,
+    condition: "mint"
   },
   {
     id: "3",
@@ -38,7 +39,8 @@ export const sampleCards: Card[] = [
     manaCost: "3",
     description: "T: Add one mana of any color to your mana pool.\nSacrifice Ancient Artifact: Draw a card.",
     price: 25.00,
-    quantity: 1
+    quantity: 1,
+    condition: "excellent"
   },
   {
     id: "4",
@@ -49,7 +51,8 @@ export const sampleCards: Card[] = [
     set: "Modern Horizons 2",
     description: "T: Add G to your mana pool.\n1, T: Gain 2 life.",
     price: 8.75,
-    quantity: 3
+    quantity: 3,
+    condition: "good"
   },
   {
     id: "5",
@@ -61,7 +64,8 @@ export const sampleCards: Card[] = [
     manaCost: "XR",
     description: "Fireball deals X damage divided evenly, rounded down, among any number of targets.",
     price: 0.25,
-    quantity: 10
+    quantity: 10,
+    condition: "played"
   },
   {
     id: "6",
@@ -73,7 +77,8 @@ export const sampleCards: Card[] = [
     manaCost: "3UU",
     description: "You control enchanted creature.",
     price: 1.25,
-    quantity: 2
+    quantity: 2,
+    condition: "near mint"
   },
   {
     id: "7",
@@ -87,7 +92,8 @@ export const sampleCards: Card[] = [
     power: "3",
     toughness: "3",
     price: 35.00,
-    quantity: 1
+    quantity: 1,
+    condition: "mint"
   },
   {
     id: "8",
@@ -99,7 +105,8 @@ export const sampleCards: Card[] = [
     manaCost: "2BB",
     description: "Target player discards two cards and loses 2 life. You gain 2 life.",
     price: 0.75,
-    quantity: 4
+    quantity: 4,
+    condition: "played"
   }
 ];
 

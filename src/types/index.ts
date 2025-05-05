@@ -10,6 +10,8 @@ export type CardType =
   | "planeswalker" 
   | "land";
 
+export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
+
 export interface Card {
   id: string;
   name: string;
@@ -23,6 +25,7 @@ export interface Card {
   toughness?: string;
   price?: number;
   quantity: number;
+  condition?: CardCondition;
 }
 
 export interface Deck {

@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Card as CardType } from "../types";
+import { Card as CardType, CardCondition } from "../types";
 import { Badge } from "@/components/ui/badge";
 
 interface CardItemProps {
@@ -26,6 +26,25 @@ const getRarityColor = (rarity: string) => {
   }
 };
 
+const getConditionColor = (condition: CardCondition | undefined) => {
+  switch (condition) {
+    case "mint":
+      return "bg-green-500";
+    case "near mint":
+      return "bg-emerald-400";
+    case "excellent":
+      return "bg-blue-400";
+    case "good":
+      return "bg-yellow-400";
+    case "played":
+      return "bg-orange-400";
+    case "poor":
+      return "bg-red-500";
+    default:
+      return "bg-gray-300";
+  }
+};
+
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
   return (
     <div 
@@ -42,6 +61,14 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         <div className="absolute top-2 left-2 z-10">
           <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
             x{card.quantity}
+          </Badge>
+        </div>
+      )}
+      
+      {!compact && card.condition && (
+        <div className="absolute top-10 right-2 z-10">
+          <Badge variant="secondary" className={`${getConditionColor(card.condition)} text-white capitalize`}>
+            {card.condition}
           </Badge>
         </div>
       )}

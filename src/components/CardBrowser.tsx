@@ -21,8 +21,9 @@ const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
+  const [filterCondition, setFilterCondition] = useState("all");
   const [sortBy, setSortBy] = useState("name");
-  const [allCards] = useState<Card[]>(sampleCards);
+  const [allCards, setAllCards] = useState<Card[]>(sampleCards);
 
   const handleCardClick = (card: Card) => {
     setSelectedCard(card);
@@ -33,11 +34,19 @@ const CardBrowser = () => {
     setIsCardDetailOpen(false);
   };
 
+  const handleUpdateCard = (updatedCard: Card) => {
+    setAllCards(allCards.map(card => 
+      card.id === updatedCard.id ? updatedCard : card
+    ));
+    setSelectedCard(updatedCard);
+  };
+
   let filteredCards = allCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
-    return matchesSearch && matchesType && matchesRarity;
+    const matchesCondition = filterCondition === "all" || card.condition === filterCondition;
+    return matchesSearch && matchesType && matchesRarity && matchesCondition;
   });
 
   // Sort cards
@@ -49,6 +58,8 @@ const CardBrowser = () => {
         return (b.price || 0) - (a.price || 0);
       case "rarity":
         return a.rarity.localeCompare(b.rarity);
+      case "condition":
+        return (a.condition || "").localeCompare(b.condition || "");
       default:
         return 0;
     }
@@ -56,6 +67,7 @@ const CardBrowser = () => {
 
   const cardTypes = Array.from(new Set(allCards.map((card) => card.type)));
   const rarities = Array.from(new Set(allCards.map((card) => card.rarity)));
+  const conditions = Array.from(new Set(allCards.map((card) => card.condition).filter(Boolean)));
 
   return (
     <div className="space-y-6">
@@ -96,6 +108,19 @@ const CardBrowser = () => {
               ))}
             </SelectContent>
           </Select>
+          <Select value={filterCondition} onValueChange={setFilterCondition}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Condition" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Conditions</SelectItem>
+              {conditions.map((condition) => (
+                <SelectItem key={condition} value={condition} className="capitalize">
+                  {condition}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Sort By" />
@@ -104,6 +129,7 @@ const CardBrowser = () => {
               <SelectItem value="name">Name</SelectItem>
               <SelectItem value="price">Price</SelectItem>
               <SelectItem value="rarity">Rarity</SelectItem>
+              <SelectItem value="condition">Condition</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -124,6 +150,7 @@ const CardBrowser = () => {
               setSearchTerm("");
               setFilterType("all");
               setFilterRarity("all");
+              setFilterCondition("all");
             }}
           >
             Clear filters
@@ -135,6 +162,7 @@ const CardBrowser = () => {
         card={selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
+        onUpdateCard={handleUpdateCard}
       />
     </div>
   );
