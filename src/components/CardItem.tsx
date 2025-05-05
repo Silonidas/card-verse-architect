@@ -9,7 +9,35 @@ interface CardItemProps {
   compact?: boolean;
 }
 
-const getRarityColor = (rarity: string) => {
+const getRarityColor = (rarity: string, tcg?: TCGType) => {
+  // Digimon rarities
+  if (tcg === "Digimon Card Game 2020") {
+    switch (rarity) {
+      case "C": return "bg-gray-400";
+      case "U": return "bg-blue-400";
+      case "R": return "bg-tcg-purple";
+      case "SR": return "bg-yellow-500";
+      case "SEC": return "bg-red-600";
+      case "P": return "bg-green-500";
+      default: return "bg-gray-400";
+    }
+  }
+  
+  // Dragon Ball rarities
+  if (tcg === "Dragon Ball Super Card Game Fusion World") {
+    switch (rarity) {
+      case "L": return "bg-gold-500";
+      case "C": return "bg-gray-400";
+      case "UC": return "bg-blue-400";
+      case "R": return "bg-tcg-purple";
+      case "SR": return "bg-yellow-500";
+      case "SCR": return "bg-red-600";
+      case "PR": return "bg-green-500";
+      default: return "bg-gray-400";
+    }
+  }
+  
+  // Default rarities (for other TCGs)
   switch (rarity) {
     case "common":
       return "bg-gray-400";
@@ -72,14 +100,25 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
     };
   }, []);
 
+  // Get the display rarity text
+  const getRarityDisplayText = (rarity: string, tcg?: TCGType) => {
+    // For cards with no specific TCG or different from current
+    if (!tcg || tcg !== currentTCG) {
+      return rarity;
+    }
+    
+    // If it's a specific TCG, return the abbreviation as is
+    return rarity;
+  };
+
   return (
     <div 
       className={`${compact ? 'deck-card' : 'card-item'} cursor-pointer relative group`}
       onClick={onClick}
     >
       <div className="absolute top-2 right-2 z-10">
-        <Badge variant="secondary" className={`${getRarityColor(card.rarity)} text-white`}>
-          {card.rarity}
+        <Badge variant="secondary" className={`${getRarityColor(card.rarity, card.tcg)} text-white`}>
+          {getRarityDisplayText(card.rarity, card.tcg)}
         </Badge>
       </div>
       
