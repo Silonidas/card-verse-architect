@@ -47,23 +47,17 @@ const getConditionColor = (condition: CardCondition | undefined) => {
 
 const getTcgBadgeStyle = (tcg: TCGType | undefined) => {
   switch (tcg) {
-    case "Magic: The Gathering":
-      return "bg-purple-600";
-    case "Pokemon":
-      return "bg-yellow-500";
-    case "Yu-Gi-Oh":
+    case "Digimon Card Game 2020":
       return "bg-blue-600";
-    case "Flesh and Blood":
-      return "bg-red-600";
-    case "Lorcana":
-      return "bg-cyan-500";
+    case "Dragon Ball Super Card Game Fusion World":
+      return "bg-orange-600";
     default:
       return "bg-gray-500";
   }
 };
 
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Magic: The Gathering");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
 
   useEffect(() => {
     const handleTCGChange = (event: Event) => {

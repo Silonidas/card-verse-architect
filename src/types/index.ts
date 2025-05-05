@@ -12,7 +12,7 @@ export type CardType =
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 
-export type TCGType = "Magic: The Gathering" | "Pokemon" | "Yu-Gi-Oh" | "Flesh and Blood" | "Lorcana";
+export type TCGType = "Digimon Card Game 2020" | "Dragon Ball Super Card Game Fusion World";
 
 export interface Card {
   id: string;

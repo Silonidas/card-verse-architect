@@ -17,7 +17,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Magic: The Gathering");
+  const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Digimon Card Game 2020");
   
   const navItems = [
     { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
@@ -27,11 +27,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   const tcgOptions: TCGType[] = [
-    "Magic: The Gathering",
-    "Pokemon",
-    "Yu-Gi-Oh",
-    "Flesh and Blood",
-    "Lorcana"
+    "Digimon Card Game 2020",
+    "Dragon Ball Super Card Game Fusion World"
   ];
 
   const handleTCGChange = (tcg: TCGType) => {
