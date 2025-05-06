@@ -60,23 +60,8 @@ const getConditionColor = (condition: CardCondition | undefined) => {
 };
 
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
-
-  useEffect(() => {
-    const handleTCGChange = (event: Event) => {
-      const customEvent = event as CustomEvent<TCGType>;
-      setCurrentTCG(customEvent.detail);
-    };
-
-    window.addEventListener('tcgChanged', handleTCGChange as EventListener);
-    
-    return () => {
-      window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
-    };
-  }, []);
-
   // Get the display rarity text
-  const getRarityDisplayText = (rarity: string, tcg?: TCGType) => {
+  const getRarityDisplayText = (rarity: string) => {
     return rarity;
   };
 
@@ -87,7 +72,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
     >
       <div className="absolute top-2 right-2 z-10">
         <Badge variant="secondary" className={`${getRarityColor(card.rarity, card.tcg)} text-white`}>
-          {getRarityDisplayText(card.rarity, card.tcg)}
+          {getRarityDisplayText(card.rarity)}
         </Badge>
       </div>
       
