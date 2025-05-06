@@ -1,3 +1,4 @@
+
 import { Card, Deck } from "../types";
 
 export const sampleCards: Card[] = [
@@ -6,7 +7,7 @@ export const sampleCards: Card[] = [
     name: "Dragon Ruler",
     imageUrl: "https://placehold.co/300x400/8B5CF6/FFFFFF?text=Dragon+Ruler",
     type: "creature",
-    rarity: "rare",
+    rarity: "R", // Changed from "rare" to "R" to match CardRarity type
     set: "Core Set 2023",
     manaCost: "2RR",
     description: "Flying\nWhen Dragon Ruler enters the battlefield, it deals 3 damage to any target.",
@@ -21,7 +22,7 @@ export const sampleCards: Card[] = [
     name: "Mystic Counterspell",
     imageUrl: "https://placehold.co/300x400/3B82F6/FFFFFF?text=Mystic+Counterspell",
     type: "instant",
-    rarity: "uncommon",
+    rarity: "U", // Changed from "uncommon" to "U" to match CardRarity type
     set: "Modern Horizons",
     manaCost: "UU",
     description: "Counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
@@ -34,7 +35,7 @@ export const sampleCards: Card[] = [
     name: "Ancient Artifact",
     imageUrl: "https://placehold.co/300x400/6366F1/FFFFFF?text=Ancient+Artifact",
     type: "artifact",
-    rarity: "mythic",
+    rarity: "SR", // Changed from "mythic" to "SR" to match CardRarity type
     set: "Masters Edition",
     manaCost: "3",
     description: "T: Add one mana of any color to your mana pool.\nSacrifice Ancient Artifact: Draw a card.",
