@@ -3,11 +3,6 @@ export type DigimonRarity = "C" | "U" | "R" | "SR" | "SEC" | "P";
 export type DragonBallRarity = "L" | "C" | "UC" | "R" | "SR" | "SCR" | "PR";
 
 export type CardRarity = 
-  | "common" 
-  | "uncommon" 
-  | "rare" 
-  | "mythic" 
-  | "legendary"
   | DigimonRarity
   | DragonBallRarity;
 

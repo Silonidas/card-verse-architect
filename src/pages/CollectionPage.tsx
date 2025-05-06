@@ -1,15 +1,16 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Collection from "@/components/Collection";
+import { TCGType } from "@/types";
 
 const CollectionPage = () => {
-  const [currentTCG, setCurrentTCG] = React.useState("Digimon Card Game 2020");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
 
   // Listen for TCG changes from Layout component
-  React.useEffect(() => {
+  useEffect(() => {
     const handleTCGChange = (event: Event) => {
-      const customEvent = event as CustomEvent<string>;
+      const customEvent = event as CustomEvent<TCGType>;
       setCurrentTCG(customEvent.detail);
     };
 

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card as CardType, CardCondition, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
 
@@ -26,13 +26,13 @@ const getRarityColor = (rarity: string, tcg?: TCGType) => {
   // Dragon Ball rarities
   if (tcg === "Dragon Ball Super Card Game Fusion World") {
     switch (rarity) {
-      case "L": return "bg-gold-500";
-      case "C": return "bg-gray-400";
-      case "UC": return "bg-blue-400";
-      case "R": return "bg-tcg-purple";
-      case "SR": return "bg-yellow-500";
-      case "SCR": return "bg-red-600";
-      case "PR": return "bg-green-500";
+      case "L": return "bg-gold-500";  // Leader
+      case "C": return "bg-gray-400";  // Common
+      case "UC": return "bg-blue-400"; // Uncommon
+      case "R": return "bg-tcg-purple"; // Rare
+      case "SR": return "bg-yellow-500"; // Super Rare
+      case "SCR": return "bg-red-600"; // Secret Rare
+      case "PR": return "bg-green-500"; // Promo
       default: return "bg-gray-400";
     }
   }
@@ -61,7 +61,8 @@ const getConditionColor = (condition: CardCondition | undefined) => {
 
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
   // Get the display rarity text
-  const getRarityDisplayText = (rarity: string) => {
+  const getRarityDisplayText = (rarity: string, tcg?: TCGType) => {
+    // Return the rarity as is
     return rarity;
   };
 
@@ -72,7 +73,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
     >
       <div className="absolute top-2 right-2 z-10">
         <Badge variant="secondary" className={`${getRarityColor(card.rarity, card.tcg)} text-white`}>
-          {getRarityDisplayText(card.rarity)}
+          {getRarityDisplayText(card.rarity, card.tcg)}
         </Badge>
       </div>
       

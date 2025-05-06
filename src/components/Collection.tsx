@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sampleCards } from "@/data/sampleCards";
 import CardItem from "./CardItem";
 import CardDetail from "./CardDetail";
@@ -16,21 +16,34 @@ import {
 import { Card as CardUI, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Card, TCGType } from "@/types";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 
 const Collection = () => {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterRarity, setFilterRarity] = useState("all");
   
   // Filter cards based on the current TCG
-  const digimonCards = sampleCards.filter(card => card.tcg === "Digimon Card Game 2020");
-  const dragonBallCards = sampleCards.filter(card => card.tcg === "Dragon Ball Super Card Game Fusion World");
+  const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
+  
+  const filteredCards = tcgCards.filter((card) => {
+    const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "all" || card.type === filterType;
+    const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
+    return matchesSearch && matchesType && matchesRarity;
+  });
+
+  const totalCards = tcgCards.reduce((sum, card) => sum + card.quantity, 0);
+  const uniqueCards = tcgCards.length;
+  const estimatedValue = tcgCards.reduce(
+    (sum, card) => sum + (card.price || 0) * card.quantity,
+    0
+  );
+
+  const cardTypes = Array.from(new Set(tcgCards.map((card) => card.type)));
+  const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
 
   const handleCardClick = (card: Card) => {
     setSelectedCard(card);
@@ -42,10 +55,14 @@ const Collection = () => {
   };
 
   // Listen for TCG changes from Layout component
-  React.useEffect(() => {
+  useEffect(() => {
     const handleTCGChange = (event: Event) => {
       const customEvent = event as CustomEvent<TCGType>;
       setCurrentTCG(customEvent.detail);
+      
+      // Reset filters when changing TCG
+      setFilterType("all");
+      setFilterRarity("all");
     };
 
     window.addEventListener('tcgChanged', handleTCGChange as EventListener);
@@ -55,34 +72,8 @@ const Collection = () => {
     };
   }, []);
 
-  // Only show the collection based on the selected TCG
-  const CardsCollectionView = () => {
-    // State for the currently visible TCG's cards
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterType, setFilterType] = useState("all");
-    const [filterRarity, setFilterRarity] = useState("all");
-
-    // Get cards for current TCG
-    const tcgCards = currentTCG === "Digimon Card Game 2020" ? digimonCards : dragonBallCards;
-    
-    const filteredCards = tcgCards.filter((card) => {
-      const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = filterType === "all" || card.type === filterType;
-      const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
-      return matchesSearch && matchesType && matchesRarity;
-    });
-
-    const totalCards = tcgCards.reduce((sum, card) => sum + card.quantity, 0);
-    const uniqueCards = tcgCards.length;
-    const estimatedValue = tcgCards.reduce(
-      (sum, card) => sum + (card.price || 0) * card.quantity,
-      0
-    );
-
-    const cardTypes = Array.from(new Set(tcgCards.map((card) => card.type)));
-    const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
-
-    return (
+  return (
+    <>
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CardUI>
@@ -187,12 +178,6 @@ const Collection = () => {
           </div>
         )}
       </div>
-    );
-  };
-
-  return (
-    <>
-      <CardsCollectionView />
       <CardDetail
         card={selectedCard}
         isOpen={isCardDetailOpen}
