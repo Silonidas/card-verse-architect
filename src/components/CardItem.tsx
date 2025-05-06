@@ -37,21 +37,7 @@ const getRarityColor = (rarity: string, tcg?: TCGType) => {
     }
   }
   
-  // Default rarities (for other TCGs)
-  switch (rarity) {
-    case "common":
-      return "bg-gray-400";
-    case "uncommon":
-      return "bg-blue-400";
-    case "rare":
-      return "bg-tcg-purple";
-    case "mythic":
-      return "bg-orange-500";
-    case "legendary":
-      return "bg-yellow-400";
-    default:
-      return "bg-gray-400";
-  }
+  return "bg-gray-400";
 };
 
 const getConditionColor = (condition: CardCondition | undefined) => {
@@ -73,17 +59,6 @@ const getConditionColor = (condition: CardCondition | undefined) => {
   }
 };
 
-const getTcgBadgeStyle = (tcg: TCGType | undefined) => {
-  switch (tcg) {
-    case "Digimon Card Game 2020":
-      return "bg-blue-600";
-    case "Dragon Ball Super Card Game Fusion World":
-      return "bg-orange-600";
-    default:
-      return "bg-gray-500";
-  }
-};
-
 const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
 
@@ -102,12 +77,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
 
   // Get the display rarity text
   const getRarityDisplayText = (rarity: string, tcg?: TCGType) => {
-    // For cards with no specific TCG or different from current
-    if (!tcg || tcg !== currentTCG) {
-      return rarity;
-    }
-    
-    // If it's a specific TCG, return the abbreviation as is
     return rarity;
   };
 
@@ -134,14 +103,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         <div className="absolute top-10 right-2 z-10">
           <Badge variant="secondary" className={`${getConditionColor(card.condition)} text-white capitalize`}>
             {card.condition}
-          </Badge>
-        </div>
-      )}
-
-      {!compact && card.tcg && card.tcg !== currentTCG && (
-        <div className="absolute top-18 right-2 z-10">
-          <Badge variant="secondary" className={`${getTcgBadgeStyle(card.tcg)} text-white`}>
-            {card.tcg}
           </Badge>
         </div>
       )}

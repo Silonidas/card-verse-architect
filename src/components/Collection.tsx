@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sampleCards } from "@/data/sampleCards";
 import CardItem from "./CardItem";
 import CardDetail from "./CardDetail";
@@ -15,7 +15,13 @@ import {
 } from "@/components/ui/select";
 import { Card as CardUI, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/types";
+import { Card, TCGType } from "@/types";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 const Collection = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +30,21 @@ const Collection = () => {
   const [allCards] = useState<Card[]>(sampleCards);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+
+  // Listen for TCG changes from Layout component
+  useEffect(() => {
+    const handleTCGChange = (event: Event) => {
+      const customEvent = event as CustomEvent<TCGType>;
+      setCurrentTCG(customEvent.detail);
+    };
+
+    window.addEventListener('tcgChanged', handleTCGChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
+    };
+  }, []);
 
   const handleCardClick = (card: Card) => {
     setSelectedCard(card);
@@ -34,22 +55,25 @@ const Collection = () => {
     setIsCardDetailOpen(false);
   };
 
-  const filteredCards = allCards.filter((card) => {
+  // Filter cards based on the selected TCG
+  const tcgFilteredCards = allCards.filter(card => card.tcg === currentTCG);
+
+  const filteredCards = tcgFilteredCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
     return matchesSearch && matchesType && matchesRarity;
   });
 
-  const totalCards = allCards.reduce((sum, card) => sum + card.quantity, 0);
-  const uniqueCards = allCards.length;
-  const estimatedValue = allCards.reduce(
+  const totalCards = tcgFilteredCards.reduce((sum, card) => sum + card.quantity, 0);
+  const uniqueCards = tcgFilteredCards.length;
+  const estimatedValue = tcgFilteredCards.reduce(
     (sum, card) => sum + (card.price || 0) * card.quantity,
     0
   );
 
-  const cardTypes = Array.from(new Set(allCards.map((card) => card.type)));
-  const rarities = Array.from(new Set(allCards.map((card) => card.rarity)));
+  const cardTypes = Array.from(new Set(tcgFilteredCards.map((card) => card.type)));
+  const rarities = Array.from(new Set(tcgFilteredCards.map((card) => card.rarity)));
 
   return (
     <div className="space-y-6">
@@ -87,7 +111,7 @@ const Collection = () => {
                 variant="outline"
                 className="capitalize"
               >
-                {rarity}: {allCards.filter(c => c.rarity === rarity).reduce((sum, card) => sum + card.quantity, 0)}
+                {rarity}: {tcgFilteredCards.filter(c => c.rarity === rarity).reduce((sum, card) => sum + card.quantity, 0)}
               </Badge>
             ))}
           </CardContent>
