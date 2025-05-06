@@ -1,4 +1,5 @@
 
+
 export type DigimonRarity = "C" | "U" | "R" | "SR" | "SEC" | "P";
 export type DragonBallRarity = "L" | "C" | "UC" | "R" | "SR" | "SCR" | "PR";
 
@@ -13,7 +14,8 @@ export type CardType =
   | "artifact" 
   | "enchantment" 
   | "planeswalker" 
-  | "land";
+  | "land"
+  | "leader";
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 
@@ -44,3 +46,4 @@ export interface Deck {
   description?: string;
   coverCard?: string;
 }
+

@@ -146,6 +146,32 @@ export const sampleCards: Card[] = [
     quantity: 4,
     condition: "played",
     tcg: "Dragon Ball Super Card Game Fusion World"
+  },
+  {
+    id: "12",
+    name: "Son Goku, World Champion",
+    imageUrl: "https://placehold.co/300x400/FFA500/FFFFFF?text=Goku+Leader",
+    type: "leader",
+    rarity: "L",
+    set: "FW-03",
+    description: "Front: When this card attacks, draw 1 card.\nBack: [Awaken] When your life is 4 or less: Draw 2 cards, flip this card over.",
+    price: 15.00,
+    quantity: 1,
+    condition: "mint",
+    tcg: "Dragon Ball Super Card Game Fusion World"
+  },
+  {
+    id: "13",
+    name: "Vegeta, Saiyan Prince",
+    imageUrl: "https://placehold.co/300x400/0000FF/FFFFFF?text=Vegeta+Leader",
+    type: "leader",
+    rarity: "L",
+    set: "FW-03",
+    description: "Front: When you take damage, draw 1 card.\nBack: [Awaken] When your life is 4 or less: Draw 2 cards, flip this card over.",
+    price: 12.50,
+    quantity: 1,
+    condition: "near mint",
+    tcg: "Dragon Ball Super Card Game Fusion World"
   }
 ];
 
