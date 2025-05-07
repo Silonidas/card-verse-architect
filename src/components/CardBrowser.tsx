@@ -1,10 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sampleCards } from "@/data/sampleCards";
-import CardItem from "./CardItem";
-import CardDetail from "./CardDetail";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardType, TCGType } from "@/types";
+import CardGrid from "./collection/CardGrid";
+import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import {
   Select,
@@ -12,36 +11,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card } from "@/types";
+} from "./ui/select";
 
 const CardBrowser = () => {
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-  const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
   const [filterCondition, setFilterCondition] = useState("all");
-  const [sortBy, setSortBy] = useState("name");
-  const [allCards, setAllCards] = useState<Card[]>(sampleCards);
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+  
+  // Filter cards based on the current TCG first
+  const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
+  
+  const cardTypes = Array.from(new Set(tcgCards.map((card) => card.type)));
+  const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
+  const conditions = Array.from(
+    new Set(tcgCards.filter(card => card.condition).map((card) => card.condition))
+  ) as string[];
 
-  const handleCardClick = (card: Card) => {
-    setSelectedCard(card);
-    setIsCardDetailOpen(true);
-  };
-
-  const closeCardDetail = () => {
-    setIsCardDetailOpen(false);
-  };
-
-  const handleUpdateCard = (updatedCard: Card) => {
-    setAllCards(allCards.map(card => 
-      card.id === updatedCard.id ? updatedCard : card
-    ));
-    setSelectedCard(updatedCard);
-  };
-
-  let filteredCards = allCards.filter((card) => {
+  const filteredCards = tcgCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
@@ -49,25 +37,26 @@ const CardBrowser = () => {
     return matchesSearch && matchesType && matchesRarity && matchesCondition;
   });
 
-  // Sort cards
-  filteredCards = [...filteredCards].sort((a, b) => {
-    switch (sortBy) {
-      case "name":
-        return a.name.localeCompare(b.name);
-      case "price":
-        return (b.price || 0) - (a.price || 0);
-      case "rarity":
-        return a.rarity.localeCompare(b.rarity);
-      case "condition":
-        return (a.condition || "").localeCompare(b.condition || "");
-      default:
-        return 0;
-    }
-  });
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterType("all");
+    setFilterRarity("all");
+    setFilterCondition("all");
+  };
 
-  const cardTypes = Array.from(new Set(allCards.map((card) => card.type)));
-  const rarities = Array.from(new Set(allCards.map((card) => card.rarity)));
-  const conditions = Array.from(new Set(allCards.map((card) => card.condition).filter(Boolean)));
+  // Listen for TCG changes from Layout component
+  useEffect(() => {
+    const handleTCGChange = (event: Event) => {
+      const customEvent = event as CustomEvent<TCGType>;
+      setCurrentTCG(customEvent.detail);
+    };
+
+    window.addEventListener('tcgChanged', handleTCGChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
+    };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -81,10 +70,10 @@ const CardBrowser = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 md:flex gap-2">
           <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Card Type" />
+            <SelectTrigger>
+              <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
@@ -96,8 +85,8 @@ const CardBrowser = () => {
             </SelectContent>
           </Select>
           <Select value={filterRarity} onValueChange={setFilterRarity}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Rarity" />
+            <SelectTrigger>
+              <SelectValue placeholder="All Rarities" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Rarities</SelectItem>
@@ -109,8 +98,8 @@ const CardBrowser = () => {
             </SelectContent>
           </Select>
           <Select value={filterCondition} onValueChange={setFilterCondition}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Condition" />
+            <SelectTrigger>
+              <SelectValue placeholder="All Conditions" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Conditions</SelectItem>
@@ -121,48 +110,13 @@ const CardBrowser = () => {
               ))}
             </SelectContent>
           </Select>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name">Name</SelectItem>
-              <SelectItem value="price">Price</SelectItem>
-              <SelectItem value="rarity">Rarity</SelectItem>
-              <SelectItem value="condition">Condition</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
-      {filteredCards.length > 0 ? (
-        <div className="card-grid">
-          {filteredCards.map((card) => (
-            <CardItem key={card.id} card={card} onClick={() => handleCardClick(card)} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-10">
-          <p className="text-muted-foreground">No cards found matching your filters</p>
-          <Button
-            variant="link"
-            onClick={() => {
-              setSearchTerm("");
-              setFilterType("all");
-              setFilterRarity("all");
-              setFilterCondition("all");
-            }}
-          >
-            Clear filters
-          </Button>
-        </div>
-      )}
-
-      <CardDetail
-        card={selectedCard}
-        isOpen={isCardDetailOpen}
-        onClose={closeCardDetail}
-        onUpdateCard={handleUpdateCard}
+      <CardGrid 
+        filteredCards={filteredCards} 
+        onCardClick={() => {}} 
+        clearFilters={clearFilters} 
       />
     </div>
   );

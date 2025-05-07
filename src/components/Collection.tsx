@@ -50,8 +50,7 @@ const Collection = () => {
       setCurrentTCG(customEvent.detail);
       
       // Reset filters when changing TCG
-      setFilterType("all");
-      setFilterRarity("all");
+      clearFilters();
     };
 
     window.addEventListener('tcgChanged', handleTCGChange as EventListener);
