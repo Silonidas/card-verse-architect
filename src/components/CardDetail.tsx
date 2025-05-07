@@ -73,6 +73,14 @@ const CardDetail: React.FC<CardDetailProps> = ({
     }
   };
 
+  const getCardHoloClass = (rarity: string) => {
+    switch (rarity) {
+      case "SR": return "card-holo-sr";
+      case "SCR": case "SEC": return "card-holo-scr";
+      default: return "";
+    }
+  };
+
   const getConditionColor = (condition: CardCondition | undefined) => {
     switch (condition) {
       case "mint":
@@ -129,7 +137,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
+          <div className={`relative ${getCardHoloClass(card.rarity)}`}>
             <img
               src={card.imageUrl}
               alt={card.name}

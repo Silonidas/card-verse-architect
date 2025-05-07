@@ -38,6 +38,14 @@ const getRarityColor = (rarity: string, tcg: TCGType) => {
   }
 };
 
+const getCardHoloClass = (rarity: string) => {
+  switch (rarity) {
+    case "SR": return "card-holo-sr";
+    case "SCR": case "SEC": return "card-holo-scr";
+    default: return "";
+  }
+};
+
 const getConditionColor = (condition: CardCondition | undefined) => {
   switch (condition) {
     case "mint":
@@ -65,7 +73,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
 
   return (
     <div 
-      className={`${compact ? 'deck-card' : 'card-item'} cursor-pointer relative group`}
+      className={`${compact ? 'deck-card' : 'card-item'} cursor-pointer relative group ${getCardHoloClass(card.rarity)}`}
       onClick={onClick}
     >
       <div className="absolute top-2 right-2 z-10">
