@@ -91,6 +91,9 @@
 
 .holo-badge-scr {
   background-size: 200% 200%;
+  position: relative;
+  border-radius: 9999px;
+  overflow: hidden; 
   animation: holo-shine 1.5s linear infinite;
   background-image: linear-gradient(
     45deg,
@@ -113,13 +116,14 @@
 .holo-badge-scr::before {
   content: '';
   position: absolute;
+  inset: -6px;
   top: -3px;
   left: -3px;
   right: -3px;
   bottom: -3px;
   z-index: -1;
   border-radius: 9999px;
-  filter: blur(6px);
+  filter: blur(10px);
   background-image: inherit;
   animation: holo-shine 1.5s linear infinite;
   opacity: 0.9;
@@ -129,6 +133,7 @@
 .card-holo-sr {
   position: relative;
   overflow: hidden;
+  border-radius: 0.75rem
 }
 
 .card-holo-sr::after {
@@ -147,8 +152,9 @@
     rgba(155, 135, 245, 0.15) 100%
   );
   background-size: 200% 200%;
-  animation: holo-shine 2.5s ease infinite;
+  animation: holo-shine 2s ease infinite;
   pointer-events: none;
+  mix-blend-mode: overlay;
   z-index: 10;
 }
 
