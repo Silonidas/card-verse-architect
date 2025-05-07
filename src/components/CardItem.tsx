@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card as CardType, CardCondition, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
@@ -17,8 +18,8 @@ const getRarityColor = (rarity: string, tcg: TCGType) => {
       case "C": return "bg-gray-400";  // Common
       case "UC": return "bg-blue-400"; // Uncommon
       case "R": return "bg-tcg-purple"; // Rare
-      case "SR": return "bg-yellow-500"; // Super Rare
-      case "SCR": return "bg-red-600"; // Secret Rare
+      case "SR": return "holo-badge"; // Super Rare - holographic effect
+      case "SCR": return "holo-badge-scr"; // Secret Rare - enhanced holographic effect
       case "PR": return "bg-green-500"; // Promo
       default: return "bg-gray-400";
     }
@@ -29,8 +30,8 @@ const getRarityColor = (rarity: string, tcg: TCGType) => {
     case "C": return "bg-gray-400";  // Common
     case "U": case "UC": return "bg-blue-400"; // Uncommon
     case "R": return "bg-tcg-purple"; // Rare
-    case "SR": return "bg-yellow-500"; // Super/Secret Rare
-    case "SCR": case "SEC": return "bg-red-600"; // Secret Rare
+    case "SR": return "holo-badge"; // Super Rare with holographic effect
+    case "SCR": case "SEC": return "holo-badge-scr"; // Secret Rare with enhanced holographic effect
     case "PR": case "P": return "bg-green-500"; // Promo
     case "L": return "bg-gold-500";  // Leader
     default: return "bg-gray-400";

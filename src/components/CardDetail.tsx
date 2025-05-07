@@ -45,20 +45,31 @@ const CardDetail: React.FC<CardDetailProps> = ({
 
   if (!card || !localCard) return null;
 
-  const getRarityColor = (rarity: string) => {
+  const getRarityColor = (rarity: string, tcg: string) => {
+    // Dragon Ball Super rarities
+    if (tcg === "Dragon Ball Super Card Game Fusion World") {
+      switch (rarity) {
+        case "L": return "bg-gold-500";  // Leader
+        case "C": return "bg-gray-400";  // Common
+        case "UC": return "bg-blue-400"; // Uncommon
+        case "R": return "bg-tcg-purple"; // Rare
+        case "SR": return "holo-badge"; // Super Rare - holographic effect
+        case "SCR": return "holo-badge-scr"; // Secret Rare - enhanced holographic effect
+        case "PR": return "bg-green-500"; // Promo
+        default: return "bg-gray-400";
+      }
+    }
+    
+    // Default colors for future TCGs
     switch (rarity) {
-      case "common":
-        return "bg-gray-400";
-      case "uncommon":
-        return "bg-blue-400";
-      case "rare":
-        return "bg-tcg-purple";
-      case "mythic":
-        return "bg-orange-500";
-      case "legendary":
-        return "bg-yellow-400";
-      default:
-        return "bg-gray-400";
+      case "C": return "bg-gray-400";  // Common
+      case "U": case "UC": return "bg-blue-400"; // Uncommon
+      case "R": return "bg-tcg-purple"; // Rare
+      case "SR": return "holo-badge"; // Super Rare with holographic effect
+      case "SCR": case "SEC": return "holo-badge-scr"; // Secret Rare with enhanced holographic effect
+      case "PR": case "P": return "bg-green-500"; // Promo
+      case "L": return "bg-gold-500";  // Leader
+      default: return "bg-gray-400";
     }
   };
 
@@ -125,9 +136,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
               className="w-full object-cover rounded-lg"
             />
             <Badge
-              className={`absolute top-2 right-2 ${getRarityColor(
-                card.rarity
-              )} text-white`}
+              className={`absolute top-2 right-2 ${getRarityColor(card.rarity, card.tcg)} text-white`}
             >
               {card.rarity}
             </Badge>

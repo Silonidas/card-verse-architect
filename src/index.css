@@ -58,3 +58,83 @@
   @apply bg-secondary/30 backdrop-blur-sm rounded-lg overflow-hidden border border-primary/20;
   height: 220px;
 }
+
+/* Holographic effects for SR and SCR rarities */
+.holo-badge {
+  background-size: 200% 200%;
+  animation: holo-shine 2.5s ease infinite;
+  background-image: linear-gradient(
+    45deg,
+    #9b87f5 0%,
+    #D946EF 25%,
+    #F97316 50%,
+    #0EA5E9 75%,
+    #9b87f5 100%
+  );
+  position: relative;
+  text-shadow: 0 0 3px rgba(255,255,255,0.5);
+}
+
+.holo-badge::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(4px);
+  background-image: inherit;
+  animation: holo-shine 2.5s ease infinite;
+  opacity: 0.7;
+}
+
+.holo-badge-scr {
+  background-size: 200% 200%;
+  animation: holo-shine 1.5s linear infinite;
+  background-image: linear-gradient(
+    45deg,
+    #ff5e5e 0%,
+    #ff9966 10%, 
+    #ffcc33 20%, 
+    #33cc33 30%, 
+    #33ccff 40%,
+    #9933ff 50%,
+    #ff33cc 60%,
+    #ff5e5e 70%,
+    #ff9966 80%,
+    #ffcc33 90%,
+    #ff5e5e 100%
+  );
+  filter: brightness(1.2);
+  text-shadow: 0 0 5px white;
+}
+
+.holo-badge-scr::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(6px);
+  background-image: inherit;
+  animation: holo-shine 1.5s linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes holo-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
