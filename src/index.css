@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -58,6 +59,7 @@
   height: 220px;
 }
 
+/* Holographic effects for SR and SCR rarities */
 .holo-badge {
   background-size: 200% 200%;
   animation: holo-shine 2.5s ease infinite;
@@ -70,31 +72,25 @@
     #9b87f5 100%
   );
   position: relative;
-  border-radius: 9999px;
-  overflow: hidden;
   text-shadow: 0 0 3px rgba(255,255,255,0.5);
-  padding: 0.25rem 0.75rem;
-  font-weight: bold;
 }
 
 .holo-badge::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  filter: blur(6px);
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(4px);
   background-image: inherit;
   animation: holo-shine 2.5s ease infinite;
   opacity: 0.7;
-  z-index: -1;
 }
 
 .holo-badge-scr {
-  position: relative;
-  border-radius: 9999px;
-  overflow: hidden;
-  padding: 0.25rem 0.75rem;
-  font-weight: bold;
   background-size: 200% 200%;
   animation: holo-shine 1.5s linear infinite;
   background-image: linear-gradient(
@@ -118,26 +114,31 @@
 .holo-badge-scr::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  filter: blur(10px);
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(6px);
   background-image: inherit;
   animation: holo-shine 1.5s linear infinite;
   opacity: 0.9;
-  z-index: -1;
 }
 
+/* Holographic card effects - apply to entire card */
 .card-holo-sr {
   position: relative;
   overflow: hidden;
-  border-radius: 0.75rem;
 }
 
 .card-holo-sr::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(
     45deg,
     rgba(155, 135, 245, 0.15) 0%,
@@ -147,49 +148,54 @@
     rgba(155, 135, 245, 0.15) 100%
   );
   background-size: 200% 200%;
-  animation: holo-shine 2s ease infinite;
+  animation: holo-shine 2.5s ease infinite;
   pointer-events: none;
-  mix-blend-mode: overlay;
   z-index: 10;
 }
 
 .card-holo-scr {
   position: relative;
   overflow: hidden;
-  border-radius: 0.75rem;
 }
 
 .card-holo-scr::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(6px);
   background: linear-gradient(
     45deg,
-    rgba(255, 94, 94, 0.06) 0%,
-    rgba(255, 153, 102, 0.06) 10%, 
-    rgba(255, 204, 51, 0.06) 20%, 
-    rgba(51, 204, 51, 0.06) 30%, 
-    rgba(51, 204, 255, 0.06) 40%,
-    rgba(153, 51, 255, 0.06) 50%,
-    rgba(255, 51, 204, 0.06) 60%,
-    rgba(255, 94, 94, 0.06) 70%,
-    rgba(255, 153, 102, 0.06) 80%,
-    rgba(255, 204, 51, 0.06) 90%,
-    rgba(255, 94, 94, 0.06) 100%
+    rgba(255, 94, 94, 0.2) 0%,
+    rgba(255, 153, 102, 0.2) 10%, 
+    rgba(255, 204, 51, 0.2) 20%, 
+    rgba(51, 204, 51, 0.2) 30%, 
+    rgba(51, 204, 255, 0.2) 40%,
+    rgba(153, 51, 255, 0.2) 50%,
+    rgba(255, 51, 204, 0.2) 60%,
+    rgba(255, 94, 94, 0.2) 70%,
+    rgba(255, 153, 102, 0.2) 80%,
+    rgba(255, 204, 51, 0.2) 90%,
+    rgba(255, 94, 94, 0.2) 100%
   );
   background-size: 200% 200%;
   animation: holo-shine 2s linear infinite;
   pointer-events: none;
   mix-blend-mode: overlay;
-  z-index: 10;
 }
 
 @keyframes holo-shine {
   0% {
     background-position: 0% 0%;
   }
+  50% {
+    background-position: 100% 100%;
+  }
   100% {
-    background-position: 200% 200%;
+    background-position: 0% 0%;
   }
 }
