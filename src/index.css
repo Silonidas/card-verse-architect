@@ -83,7 +83,6 @@
   right: -2px;
   bottom: -2px;
   z-index: -1;
-  border-radius: 9999px;
   filter: blur(4px);
   background-image: inherit;
   animation: holo-shine 2.5s ease infinite;
