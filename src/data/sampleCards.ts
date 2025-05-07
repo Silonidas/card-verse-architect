@@ -7,7 +7,7 @@ export const sampleCards: Card[] = [
     name: "Dragon Ruler",
     imageUrl: "https://placehold.co/300x400/8B5CF6/FFFFFF?text=Dragon+Ruler",
     type: "creature",
-    rarity: "R", // Changed from "rare" to "R" to match CardRarity type
+    rarity: "R",
     set: "Core Set 2023",
     manaCost: "2RR",
     description: "Flying\nWhen Dragon Ruler enters the battlefield, it deals 3 damage to any target.",
@@ -15,85 +15,36 @@ export const sampleCards: Card[] = [
     toughness: "4",
     price: 15.99,
     quantity: 2,
-    condition: "near mint"
+    condition: "near mint",
+    tcg: "Dragon Ball Super Card Game Fusion World"
   },
   {
     id: "2",
     name: "Mystic Counterspell",
     imageUrl: "https://placehold.co/300x400/3B82F6/FFFFFF?text=Mystic+Counterspell",
     type: "instant",
-    rarity: "U", // Changed from "uncommon" to "U" to match CardRarity type
+    rarity: "UC",
     set: "Modern Horizons",
     manaCost: "UU",
     description: "Counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
     price: 3.50,
     quantity: 4,
-    condition: "mint"
+    condition: "mint",
+    tcg: "Dragon Ball Super Card Game Fusion World"
   },
   {
     id: "3",
     name: "Ancient Artifact",
     imageUrl: "https://placehold.co/300x400/6366F1/FFFFFF?text=Ancient+Artifact",
     type: "artifact",
-    rarity: "SR", // Changed from "mythic" to "SR" to match CardRarity type
+    rarity: "SR",
     set: "Masters Edition",
     manaCost: "3",
     description: "T: Add one mana of any color to your mana pool.\nSacrifice Ancient Artifact: Draw a card.",
     price: 25.00,
     quantity: 1,
-    condition: "excellent"
-  },
-  {
-    id: "4",
-    name: "MetalGreymon",
-    imageUrl: "https://placehold.co/300x400/3B82F6/FFFFFF?text=MetalGreymon",
-    type: "creature",
-    rarity: "SR",
-    set: "BT-01",
-    description: "When digivolving, gain +2000 DP and delete 1 opposing Digimon with 4000 DP or less.",
-    price: 12.50,
-    quantity: 2,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "5",
-    name: "Agumon",
-    imageUrl: "https://placehold.co/300x400/3B82F6/FFFFFF?text=Agumon",
-    type: "creature",
-    rarity: "C",
-    set: "ST-1",
-    description: "When attacking, gain +1000 DP for this battle.",
-    price: 0.50,
-    quantity: 4,
-    condition: "near mint",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "6",
-    name: "Greymon",
-    imageUrl: "https://placehold.co/300x400/3B82F6/FFFFFF?text=Greymon",
-    type: "creature",
-    rarity: "U",
-    set: "BT-01",
-    description: "When digivolving, draw 1 card.",
-    price: 1.00,
-    quantity: 3,
     condition: "excellent",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "7",
-    name: "Omnimon",
-    imageUrl: "https://placehold.co/300x400/FF0000/FFFFFF?text=Omnimon",
-    type: "creature",
-    rarity: "SEC",
-    set: "BT-01",
-    description: "Security Attack +1. When digivolving, delete all opposing Digimon with 6000 DP or less.",
-    price: 45.00,
-    quantity: 1,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020"
+    tcg: "Dragon Ball Super Card Game Fusion World"
   },
   {
     id: "8",
@@ -182,7 +133,7 @@ export const sampleDecks: Deck[] = [
     format: "Standard",
     description: "A control deck focusing on counters and card draw",
     coverCard: "2",
-    cards: [sampleCards[1], sampleCards[5]].map(card => ({...card, quantity: 4}))
+    cards: [sampleCards[1], sampleCards[2]].map(card => ({...card, quantity: 4}))
   },
   {
     id: "2",
@@ -190,7 +141,7 @@ export const sampleDecks: Deck[] = [
     format: "Modern",
     description: "Fast aggro deck with burn spells",
     coverCard: "5",
-    cards: [sampleCards[0], sampleCards[4]].map(card => ({...card, quantity: 4}))
+    cards: [sampleCards[0], sampleCards[3]].map(card => ({...card, quantity: 4}))
   },
   {
     id: "3",
@@ -198,6 +149,6 @@ export const sampleDecks: Deck[] = [
     format: "Legacy",
     description: "Big creatures and ramp",
     coverCard: "7",
-    cards: [sampleCards[3], sampleCards[6]].map(card => ({...card, quantity: 4}))
+    cards: [sampleCards[4], sampleCards[5]].map(card => ({...card, quantity: 4}))
   }
 ];

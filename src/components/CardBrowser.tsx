@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { sampleCards } from "@/data/sampleCards";
-import { Card, CardType, TCGType } from "@/types";
+import { Card, TCGType } from "@/types";
 import CardGrid from "./collection/CardGrid";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
@@ -18,7 +18,7 @@ const CardBrowser = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
   const [filterCondition, setFilterCondition] = useState("all");
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Dragon Ball Super Card Game Fusion World");
   
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
@@ -49,6 +49,7 @@ const CardBrowser = () => {
     const handleTCGChange = (event: Event) => {
       const customEvent = event as CustomEvent<TCGType>;
       setCurrentTCG(customEvent.detail);
+      clearFilters();
     };
 
     window.addEventListener('tcgChanged', handleTCGChange as EventListener);

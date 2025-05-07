@@ -10,7 +10,7 @@ import CardGrid from "./collection/CardGrid";
 const Collection = () => {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Dragon Ball Super Card Game Fusion World");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");

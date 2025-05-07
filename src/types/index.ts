@@ -1,11 +1,7 @@
 
-
-export type DigimonRarity = "C" | "U" | "R" | "SR" | "SEC" | "P";
 export type DragonBallRarity = "L" | "C" | "UC" | "R" | "SR" | "SCR" | "PR";
 
-export type CardRarity = 
-  | DigimonRarity
-  | DragonBallRarity;
+export type CardRarity = DragonBallRarity;
 
 export type CardType = 
   | "creature" 
@@ -19,7 +15,8 @@ export type CardType =
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 
-export type TCGType = "Digimon Card Game 2020" | "Dragon Ball Super Card Game Fusion World";
+// Changed to string type to make it easy to add new TCGs in the future
+export type TCGType = string;
 
 export interface Card {
   id: string;
@@ -28,7 +25,7 @@ export interface Card {
   type: CardType;
   rarity: CardRarity;
   set: string;
-  tcg?: TCGType;
+  tcg: TCGType;
   manaCost?: string;
   description?: string;
   power?: string;
@@ -46,4 +43,3 @@ export interface Deck {
   description?: string;
   coverCard?: string;
 }
-
