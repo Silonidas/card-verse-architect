@@ -1,17 +1,12 @@
 
-export type DragonBallRarity = "L" | "C" | "UC" | "R" | "SR" | "SCR" | "PR";
+export type DragonBallRarity = "C" | "UC" | "R" | "SR" | "SCR" | "PR";
 
 export type CardRarity = DragonBallRarity;
 
 export type CardType = 
-  | "creature" 
-  | "instant" 
-  | "sorcery" 
-  | "artifact" 
-  | "enchantment" 
-  | "planeswalker" 
-  | "land"
-  | "leader";
+  | "leader" 
+  | "battle" 
+  | "extra";
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 

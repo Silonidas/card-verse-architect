@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card as CardType, CardCondition } from "../types";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +48,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
     // Dragon Ball Super rarities
     if (tcg === "Dragon Ball Super Card Game Fusion World") {
       switch (rarity) {
-        case "L": return "bg-gold-500";  // Leader
         case "C": return "bg-gray-400";  // Common
         case "UC": return "bg-blue-400"; // Uncommon
         case "R": return "bg-tcg-purple"; // Rare
@@ -68,7 +66,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
       case "SR": return "holo-badge"; // Super Rare with holographic effect
       case "SCR": case "SEC": return "holo-badge-scr"; // Secret Rare with enhanced holographic effect
       case "PR": case "P": return "bg-green-500"; // Promo
-      case "L": return "bg-gold-500";  // Leader
       default: return "bg-gray-400";
     }
   };

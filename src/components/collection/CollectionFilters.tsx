@@ -32,6 +32,9 @@ const CollectionFilters = ({
   cardTypes,
   rarities,
 }: CollectionFiltersProps) => {
+  // Define the fixed card types we want to show
+  const displayCardTypes = ["leader", "battle", "extra"];
+
   return (
     <div className="flex flex-col md:flex-row gap-4">
       <div className="relative flex-grow">
@@ -50,7 +53,7 @@ const CollectionFilters = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
-            {cardTypes.map((type) => (
+            {displayCardTypes.map((type) => (
               <SelectItem key={type} value={type} className="capitalize">
                 {type}
               </SelectItem>
