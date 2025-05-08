@@ -13,7 +13,6 @@ export const sampleCards: Card[] = [
     description: "Flying\nWhen Dragon Ruler enters the battlefield, it deals 3 damage to any target.",
     power: "4",
     toughness: "4",
-    price: 15.99,
     quantity: 2,
     condition: "near mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -27,7 +26,6 @@ export const sampleCards: Card[] = [
     set: "Modern Horizons",
     manaCost: "UU",
     description: "Counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
-    price: 3.50,
     quantity: 4,
     condition: "mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -41,7 +39,6 @@ export const sampleCards: Card[] = [
     set: "Masters Edition",
     manaCost: "3",
     description: "T: Add one mana of any color to your mana pool.\nSacrifice Ancient Artifact: Draw a card.",
-    price: 25.00,
     quantity: 1,
     condition: "excellent",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -54,7 +51,6 @@ export const sampleCards: Card[] = [
     rarity: "SR",
     set: "FW-01",
     description: "When this card attacks, draw 1 card. If your life is 4 or less, draw 2 cards instead.",
-    price: 20.00,
     quantity: 2,
     condition: "mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -67,7 +63,6 @@ export const sampleCards: Card[] = [
     rarity: "R",
     set: "FW-01",
     description: "When you play this card, if you have a blue 'Saiyan' in play, KO one of your opponent's Battle Cards with 2 energy or less.",
-    price: 5.00,
     quantity: 3,
     condition: "near mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -80,7 +75,6 @@ export const sampleCards: Card[] = [
     rarity: "SCR",
     set: "FW-02",
     description: "Dual Attack, Critical\nWhen you play this card, your opponent chooses 2 of their Battle Cards and KOs them.",
-    price: 80.00,
     quantity: 1,
     condition: "excellent",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -93,7 +87,6 @@ export const sampleCards: Card[] = [
     rarity: "C",
     set: "FW-01",
     description: "When this card is KO'd, draw 1 card.",
-    price: 0.25,
     quantity: 4,
     condition: "played",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -106,7 +99,6 @@ export const sampleCards: Card[] = [
     rarity: "L",
     set: "FW-03",
     description: "Front: When this card attacks, draw 1 card.\nBack: [Awaken] When your life is 4 or less: Draw 2 cards, flip this card over.",
-    price: 15.00,
     quantity: 1,
     condition: "mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
@@ -119,7 +111,6 @@ export const sampleCards: Card[] = [
     rarity: "L",
     set: "FW-03",
     description: "Front: When you take damage, draw 1 card.\nBack: [Awaken] When your life is 4 or less: Draw 2 cards, flip this card over.",
-    price: 12.50,
     quantity: 1,
     condition: "near mint",
     tcg: "Dragon Ball Super Card Game Fusion World"

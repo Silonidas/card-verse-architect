@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { sampleCards, sampleDecks } from "@/data/sampleCards";
@@ -14,10 +15,6 @@ const Index = () => {
   // Calculate collection stats
   const totalCards = sampleCards.reduce((sum, card) => sum + card.quantity, 0);
   const totalDecks = sampleDecks.length;
-  const collectionValue = sampleCards.reduce(
-    (sum, card) => sum + (card.price || 0) * card.quantity,
-    0
-  );
 
   return (
     <Layout>
@@ -29,7 +26,7 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Cards</CardTitle>
@@ -56,27 +53,13 @@ const Index = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Collection Value</CardTitle>
+              <CardTitle className="text-sm font-medium">Card Types</CardTitle>
               <LayoutGrid className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${collectionValue.toFixed(2)}</div>
+              <div className="text-2xl font-bold">{new Set(sampleCards.map(card => card.type)).size}</div>
               <p className="text-xs text-muted-foreground">
-                Estimated market value
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Most Valuable</CardTitle>
-              <Search className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                ${Math.max(...sampleCards.map((card) => card.price || 0)).toFixed(2)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Highest card price
+                Different card types
               </p>
             </CardContent>
           </Card>

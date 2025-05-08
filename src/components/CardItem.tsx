@@ -110,7 +110,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
           <h3 className="font-bold text-white truncate">{card.name}</h3>
           <p className="text-xs text-gray-300 truncate">{card.type} - {card.set}</p>
-          {card.price && <p className="text-xs font-bold text-tcg-teal">${card.price.toFixed(2)}</p>}
         </div>
       )}
     </div>

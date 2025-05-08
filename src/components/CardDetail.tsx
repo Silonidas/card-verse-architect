@@ -211,12 +211,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-muted-foreground text-sm">Price:</span>
-                    <div className="text-lg font-bold text-tcg-teal">
-                      ${card.price?.toFixed(2) || "N/A"}
-                    </div>
-                  </div>
                 </div>
                 
                 <div>

@@ -30,7 +30,6 @@ export interface Card {
   description?: string;
   power?: string;
   toughness?: string;
-  price?: number;
   quantity: number;
   condition?: CardCondition;
 }
