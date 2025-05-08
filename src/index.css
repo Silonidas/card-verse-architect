@@ -169,24 +169,24 @@
   bottom: -50%;
   background: linear-gradient(
     135deg,
-    rgba(255, 94, 94, 0.25) 0%,
-    rgba(255, 153, 102, 0.25) 10%, 
-    rgba(255, 204, 51, 0.25) 20%, 
-    rgba(51, 204, 51, 0.25) 30%, 
-    rgba(51, 204, 255, 0.25) 40%,
-    rgba(153, 51, 255, 0.25) 50%,
-    rgba(255, 51, 204, 0.25) 60%,
-    rgba(255, 94, 94, 0.25) 70%,
-    rgba(255, 153, 102, 0.25) 80%,
-    rgba(255, 204, 51, 0.25) 90%,
-    rgba(255, 94, 94, 0.25) 100%
+    rgba(255, 94, 94, 0.15) 0%,       /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 153, 102, 0.15) 10%,    /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 204, 51, 0.15) 20%,     /* Reduced opacity from 0.25 to 0.15 */
+    rgba(51, 204, 51, 0.15) 30%,      /* Reduced opacity from 0.25 to 0.15 */
+    rgba(51, 204, 255, 0.15) 40%,     /* Reduced opacity from 0.25 to 0.15 */
+    rgba(153, 51, 255, 0.15) 50%,     /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 51, 204, 0.15) 60%,     /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 94, 94, 0.15) 70%,      /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 153, 102, 0.15) 80%,    /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 204, 51, 0.15) 90%,     /* Reduced opacity from 0.25 to 0.15 */
+    rgba(255, 94, 94, 0.15) 100%      /* Reduced opacity from 0.25 to 0.15 */
   );
   background-size: 400% 400%;
   animation: holo-shine-diagonal 2s linear infinite;
   pointer-events: none;
   z-index: 10;
   mix-blend-mode: soft-light;
-  filter: brightness(1.3) contrast(1.2);
+  filter: brightness(1.2) contrast(1.1);  /* Slightly reduced brightness and contrast */
 }
 
 @keyframes holo-shine {
