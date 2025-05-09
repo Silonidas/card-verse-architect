@@ -1,6 +1,8 @@
+
 import React from "react";
 import { Card as CardType, CardCondition, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
+import { Star } from "lucide-react";
 
 interface CardItemProps {
   card: CardType;
@@ -73,6 +75,12 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
       className={`${compact ? 'deck-card' : 'card-item'} cursor-pointer relative group ${getCardHoloClass(card.rarity)}`}
       onClick={onClick}
     >
+      {card.favorite && (
+        <div className="absolute top-2 z-10 left-1/2 transform -translate-x-1/2">
+          <Star className="fill-yellow-400 text-yellow-400" size={20} />
+        </div>
+      )}
+      
       <div className="absolute top-2 right-2 z-10">
         <Badge variant="secondary" className={`${getRarityColor(card.rarity, card.tcg)} text-white`}>
           {getRarityDisplayText(card.rarity)}

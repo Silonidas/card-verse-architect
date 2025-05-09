@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card as CardType, CardCondition } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Star } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -124,11 +124,40 @@ const CardDetail: React.FC<CardDetailProps> = ({
     }
   };
 
+  const toggleFavorite = () => {
+    const updatedCard = { ...localCard, favorite: !localCard.favorite };
+    setLocalCard(updatedCard);
+    
+    if (onUpdateCard) {
+      onUpdateCard(updatedCard);
+      toast({
+        title: updatedCard.favorite ? "Card favorited" : "Card unfavorited",
+        description: `${updatedCard.name} ${updatedCard.favorite ? "added to" : "removed from"} favorites`,
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-auto">
         <DialogHeader>
-          <DialogTitle>{card.name}</DialogTitle>
+          <DialogTitle className="flex items-center">
+            {card.name}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="ml-2" 
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite();
+              }}
+            >
+              <Star 
+                className={localCard.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"} 
+                size={18}
+              />
+            </Button>
+          </DialogTitle>
           <DialogDescription>
             {card.type} - {card.set}
           </DialogDescription>

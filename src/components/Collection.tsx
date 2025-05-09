@@ -6,6 +6,7 @@ import { Card, TCGType } from "@/types";
 import CollectionStats from "./collection/CollectionStats";
 import CollectionFilters from "./collection/CollectionFilters";
 import CardGrid from "./collection/CardGrid";
+import { toast } from "@/hooks/use-toast";
 
 const Collection = () => {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -14,15 +15,19 @@ const Collection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
+  const [showFavorites, setShowFavorites] = useState(false);
+  // Using a state copy of cards to allow modifications
+  const [cards, setCards] = useState<Card[]>(sampleCards);
   
   // Filter cards based on the current TCG
-  const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
+  const tcgCards = cards.filter(card => card.tcg === currentTCG);
   
   const filteredCards = tcgCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
-    return matchesSearch && matchesType && matchesRarity;
+    const matchesFavorites = !showFavorites || card.favorite === true;
+    return matchesSearch && matchesType && matchesRarity && matchesFavorites;
   });
 
   const cardTypes = Array.from(new Set(tcgCards.map((card) => card.type)));
@@ -41,6 +46,14 @@ const Collection = () => {
     setSearchTerm("");
     setFilterType("all");
     setFilterRarity("all");
+    setShowFavorites(false);
+  };
+
+  const handleUpdateCard = (updatedCard: Card) => {
+    const updatedCards = cards.map(card => 
+      card.id === updatedCard.id ? updatedCard : card
+    );
+    setCards(updatedCards);
   };
 
   // Listen for TCG changes from Layout component
@@ -74,6 +87,8 @@ const Collection = () => {
           setFilterRarity={setFilterRarity}
           cardTypes={cardTypes}
           rarities={rarities}
+          showFavorites={showFavorites}
+          setShowFavorites={setShowFavorites}
         />
 
         <CardGrid 
@@ -86,6 +101,7 @@ const Collection = () => {
         card={selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
+        onUpdateCard={handleUpdateCard}
       />
     </>
   );

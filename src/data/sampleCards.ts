@@ -1,4 +1,3 @@
-
 import { Card, Deck } from "../types";
 
 export const sampleCards: Card[] = [
@@ -15,7 +14,8 @@ export const sampleCards: Card[] = [
     toughness: "4",
     quantity: 2,
     condition: "near mint",
-    tcg: "Dragon Ball Super Card Game Fusion World"
+    tcg: "Dragon Ball Super Card Game Fusion World",
+    favorite: true
   },
   {
     id: "2",
@@ -53,7 +53,8 @@ export const sampleCards: Card[] = [
     description: "When this card attacks, draw 1 card. If your life is 4 or less, draw 2 cards instead.",
     quantity: 2,
     condition: "mint",
-    tcg: "Dragon Ball Super Card Game Fusion World"
+    tcg: "Dragon Ball Super Card Game Fusion World",
+    favorite: true
   },
   {
     id: "9",
@@ -101,7 +102,8 @@ export const sampleCards: Card[] = [
     description: "Front: When this card attacks, draw 1 card.\nBack: [Awaken] When your life is 4 or less: Draw 2 cards, flip this card over.",
     quantity: 1,
     condition: "mint",
-    tcg: "Dragon Ball Super Card Game Fusion World"
+    tcg: "Dragon Ball Super Card Game Fusion World",
+    favorite: true
   },
   {
     id: "13",

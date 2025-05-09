@@ -27,6 +27,7 @@ export interface Card {
   toughness?: string;
   quantity: number;
   condition?: CardCondition;
+  favorite?: boolean;
 }
 
 export interface Deck {
