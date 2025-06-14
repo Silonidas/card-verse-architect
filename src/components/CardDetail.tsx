@@ -277,7 +277,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
                   onClick={onAddToDeck}
                   className="w-full bg-tcg-purple hover:bg-tcg-purple/90"
                 >
-                  {isCollectionCard ? "Add to Deck" : "Add to Collection"}
+                  Add to Collection
                 </Button>
               )}
               <Button
