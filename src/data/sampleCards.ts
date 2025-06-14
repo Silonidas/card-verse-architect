@@ -1,7 +1,6 @@
 import { Card, Deck } from "../types";
 
 export const sampleCards: Card[] = [
-  // Dragon Ball Super cards
   {
     id: "1",
     name: "Dragon Ruler",
@@ -117,106 +116,6 @@ export const sampleCards: Card[] = [
     quantity: 1,
     condition: "near mint",
     tcg: "Dragon Ball Super Card Game Fusion World"
-  },
-  // Digimon Card Game 2020 cards
-  {
-    id: "14",
-    name: "Agumon",
-    imageUrl: "https://placehold.co/300x400/FF6B35/FFFFFF?text=Agumon",
-    type: "digimon",
-    rarity: "C",
-    set: "BT1-010",
-    description: "[Your Turn] When this Digimon attacks, gain +1000 DP.",
-    quantity: 4,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020",
-    favorite: true
-  },
-  {
-    id: "15",
-    name: "Gabumon",
-    imageUrl: "https://placehold.co/300x400/4A90E2/FFFFFF?text=Gabumon",
-    type: "digimon",
-    rarity: "C",
-    set: "BT1-029",
-    description: "[Your Turn] When this Digimon attacks, gain +1000 DP.",
-    quantity: 3,
-    condition: "near mint",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "16",
-    name: "WarGreymon",
-    imageUrl: "https://placehold.co/300x400/FF6B35/FFFFFF?text=WarGreymon",
-    type: "digimon",
-    rarity: "SR",
-    set: "BT1-011",
-    description: "[When Digivolving] Delete 1 of your opponent's Digimon with 9000 DP or less.",
-    quantity: 1,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020",
-    favorite: true
-  },
-  {
-    id: "17",
-    name: "MetalGarurumon",
-    imageUrl: "https://placehold.co/300x400/4A90E2/FFFFFF?text=MetalGarurumon",
-    type: "digimon",
-    rarity: "SR",
-    set: "BT1-030",
-    description: "[When Digivolving] Return 1 of your opponent's Digimon to their hand.",
-    quantity: 1,
-    condition: "excellent",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "18",
-    name: "Tai Kamiya",
-    imageUrl: "https://placehold.co/300x400/FF9500/FFFFFF?text=Tai+Kamiya",
-    type: "tamer",
-    rarity: "R",
-    set: "BT1-085",
-    description: "[Start of Your Turn] If you have 2 or less memory, set your memory to 3.",
-    quantity: 2,
-    condition: "near mint",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "19",
-    name: "Matt Ishida",
-    imageUrl: "https://placehold.co/300x400/4A90E2/FFFFFF?text=Matt+Ishida",
-    type: "tamer",
-    rarity: "R",
-    set: "BT1-086",
-    description: "[Start of Your Turn] If you have 2 or less memory, set your memory to 3.",
-    quantity: 2,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "20",
-    name: "Gaia Force",
-    imageUrl: "https://placehold.co/300x400/FF6B35/FFFFFF?text=Gaia+Force",
-    type: "option",
-    rarity: "U",
-    set: "BT1-112",
-    description: "Delete 1 of your opponent's Digimon with 9000 DP or less.",
-    quantity: 3,
-    condition: "excellent",
-    tcg: "Digimon Card Game 2020"
-  },
-  {
-    id: "21",
-    name: "Omnimon",
-    imageUrl: "https://placehold.co/300x400/GOLD/FFFFFF?text=Omnimon",
-    type: "digimon",
-    rarity: "SEC",
-    set: "BT1-111",
-    description: "[When Digivolving] Delete all of your opponent's Digimon with 8000 DP or less.",
-    quantity: 1,
-    condition: "mint",
-    tcg: "Digimon Card Game 2020",
-    favorite: true
   }
 ];
 

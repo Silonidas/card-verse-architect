@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card as CardType, CardCondition, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
@@ -25,20 +26,6 @@ const getRarityColor = (rarity: string, tcg: TCGType) => {
     }
   }
   
-  // Digimon Card Game 2020 rarities
-  if (tcg === "Digimon Card Game 2020") {
-    switch (rarity) {
-      case "C": return "bg-gray-400";  // Common
-      case "U": return "bg-blue-400"; // Uncommon
-      case "R": return "bg-tcg-purple"; // Rare
-      case "SR": return "holo-badge"; // Super Rare - holographic effect
-      case "SEC": return "holo-badge-scr"; // Secret Rare - enhanced holographic effect
-      case "P": return "bg-green-500"; // Promo
-      case "AA": return "bg-pink-500"; // Alternative Art
-      default: return "bg-gray-400";
-    }
-  }
-  
   // Default colors for future TCGs
   switch (rarity) {
     case "C": return "bg-gray-400";  // Common
@@ -47,7 +34,6 @@ const getRarityColor = (rarity: string, tcg: TCGType) => {
     case "SR": return "holo-badge"; // Super Rare with holographic effect
     case "SCR": case "SEC": return "holo-badge-scr"; // Secret Rare with enhanced holographic effect
     case "PR": case "P": return "bg-green-500"; // Promo
-    case "AA": return "bg-pink-500"; // Alternative Art
     default: return "bg-gray-400";
   }
 };
