@@ -25,6 +25,7 @@ interface CardDetailProps {
   onClose: () => void;
   onAddToDeck?: () => void;
   onUpdateCard?: (updatedCard: CardType) => void;
+  addToCollectionMode?: boolean;
 }
 
 const CardDetail: React.FC<CardDetailProps> = ({
@@ -33,6 +34,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
   onClose,
   onAddToDeck,
   onUpdateCard,
+  addToCollectionMode = false,
 }) => {
   const [localCard, setLocalCard] = useState<CardType | null>(null);
 
@@ -138,26 +140,31 @@ const CardDetail: React.FC<CardDetailProps> = ({
     }
   };
 
+  // Determine if we're in browse mode (no onUpdateCard function means we're browsing, not managing collection)
+  const isBrowseMode = !onUpdateCard;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             {card.name}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="ml-2" 
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFavorite();
-              }}
-            >
-              <Star 
-                className={localCard.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"} 
-                size={18}
-              />
-            </Button>
+            {!isBrowseMode && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="ml-2" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite();
+                }}
+              >
+                <Star 
+                  className={localCard.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"} 
+                  size={18}
+                />
+              </Button>
+            )}
           </DialogTitle>
           <DialogDescription>
             {card.type} - {card.set}
@@ -212,57 +219,59 @@ const CardDetail: React.FC<CardDetailProps> = ({
               </div>
             )}
 
-            <div>
-              <p className="text-sm font-medium mb-1">Collection Details</p>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="flex justify-between items-center">
+            {!isBrowseMode && (
+              <div>
+                <p className="text-sm font-medium mb-1">Collection Details</p>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="text-muted-foreground text-sm">Quantity:</span>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Button 
+                          size="icon" 
+                          variant="outline" 
+                          className="h-7 w-7"
+                          onClick={() => handleQuantityChange(false)}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span>{localCard.quantity}</span>
+                        <Button 
+                          size="icon" 
+                          variant="outline" 
+                          className="h-7 w-7"
+                          onClick={() => handleQuantityChange(true)}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div>
-                    <span className="text-muted-foreground text-sm">Quantity:</span>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Button 
-                        size="icon" 
-                        variant="outline" 
-                        className="h-7 w-7"
-                        onClick={() => handleQuantityChange(false)}
+                    <span className="text-muted-foreground text-sm">Condition:</span>
+                    <div className="mt-1">
+                      <Select 
+                        value={localCard.condition || "played"} 
+                        onValueChange={(value) => handleConditionChange(value as CardCondition)}
                       >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span>{localCard.quantity}</span>
-                      <Button 
-                        size="icon" 
-                        variant="outline" 
-                        className="h-7 w-7"
-                        onClick={() => handleQuantityChange(true)}
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
+                        <SelectTrigger className={getConditionColor(localCard.condition)}>
+                          <SelectValue placeholder="Select condition" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mint" className="text-green-500">Mint</SelectItem>
+                          <SelectItem value="near mint" className="text-emerald-400">Near Mint</SelectItem>
+                          <SelectItem value="excellent" className="text-blue-400">Excellent</SelectItem>
+                          <SelectItem value="good" className="text-yellow-400">Good</SelectItem>
+                          <SelectItem value="played" className="text-orange-400">Played</SelectItem>
+                          <SelectItem value="poor" className="text-red-500">Poor</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
-                
-                <div>
-                  <span className="text-muted-foreground text-sm">Condition:</span>
-                  <div className="mt-1">
-                    <Select 
-                      value={localCard.condition || "played"} 
-                      onValueChange={(value) => handleConditionChange(value as CardCondition)}
-                    >
-                      <SelectTrigger className={getConditionColor(localCard.condition)}>
-                        <SelectValue placeholder="Select condition" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mint" className="text-green-500">Mint</SelectItem>
-                        <SelectItem value="near mint" className="text-emerald-400">Near Mint</SelectItem>
-                        <SelectItem value="excellent" className="text-blue-400">Excellent</SelectItem>
-                        <SelectItem value="good" className="text-yellow-400">Good</SelectItem>
-                        <SelectItem value="played" className="text-orange-400">Played</SelectItem>
-                        <SelectItem value="poor" className="text-red-500">Poor</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
               </div>
-            </div>
+            )}
 
             <div className="pt-2 flex space-x-2">
               {onAddToDeck && (
@@ -270,7 +279,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
                   onClick={onAddToDeck}
                   className="w-full bg-tcg-purple hover:bg-tcg-purple/90"
                 >
-                  Add to Deck
+                  {isBrowseMode ? "Add to Collection" : "Add to Deck"}
                 </Button>
               )}
               <Button
