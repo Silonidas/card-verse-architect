@@ -71,7 +71,7 @@ const CardBrowser = () => {
         description: `${selectedCard.name}: ${existingCard.quantity + 1} in collection`,
       });
     } else {
-      // If card doesn't exist, add it with quantity 1 and condition "near mint"
+      // If card doesn't exist, add it with quantity 1
       const newCard = {
         ...selectedCard,
         quantity: 1,
@@ -214,7 +214,6 @@ const CardBrowser = () => {
               onClick={() => handleCardClick(card)}
               isDraggable={true}
               isInDeck={false}
-              showCondition={false}
             />
           ))}
         </div>
