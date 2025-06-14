@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Card as CardType, CardCondition, TCGType } from "../types";
+import { Card as CardType, TCGType } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 
@@ -8,7 +8,6 @@ interface CardItemProps {
   card: CardType;
   onClick?: () => void;
   compact?: boolean;
-  showCondition?: boolean;
 }
 
 // Made the color function more generic for easy addition of new TCGs
@@ -47,26 +46,7 @@ const getCardHoloClass = (rarity: string) => {
   }
 };
 
-const getConditionColor = (condition: CardCondition | undefined) => {
-  switch (condition) {
-    case "mint":
-      return "bg-green-500";
-    case "near mint":
-      return "bg-emerald-400";
-    case "excellent":
-      return "bg-blue-400";
-    case "good":
-      return "bg-yellow-400";
-    case "played":
-      return "bg-orange-400";
-    case "poor":
-      return "bg-red-500";
-    default:
-      return "bg-gray-300";
-  }
-};
-
-const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false, showCondition = true }) => {
+const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
   // Get the display rarity text - returns the rarity as is
   const getRarityDisplayText = (rarity: string) => {
     return rarity;
@@ -93,14 +73,6 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false, sho
         <div className="absolute top-2 left-2 z-10">
           <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
             x{card.quantity}
-          </Badge>
-        </div>
-      )}
-      
-      {!compact && showCondition && card.condition && (
-        <div className="absolute top-10 right-2 z-10">
-          <Badge variant="secondary" className={`${getConditionColor(card.condition)} text-white capitalize`}>
-            {card.condition}
           </Badge>
         </div>
       )}

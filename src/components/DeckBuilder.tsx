@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card as CardType, Deck } from "@/types";
 import { sampleCards, sampleDecks } from "@/data/sampleCards";
@@ -298,7 +299,6 @@ const DeckBuilder = () => {
                             isDraggable={true}
                             isInDeck={true}
                             compact={true}
-                            showCondition={false}
                           />
                         ))}
                       </div>
@@ -327,7 +327,6 @@ const DeckBuilder = () => {
                       onClick={() => handleCardClick(card, 'deck')}
                       isDraggable={true}
                       isInDeck={false}
-                      showCondition={false}
                     />
                   ))}
                 </div>

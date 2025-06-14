@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Card as CardType, CardCondition } from "../types";
+import { Card as CardType } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus, Star } from "lucide-react";
@@ -10,13 +11,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 
 interface CardDetailProps {
@@ -81,25 +75,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
     }
   };
 
-  const getConditionColor = (condition: CardCondition | undefined) => {
-    switch (condition) {
-      case "mint":
-        return "text-green-500";
-      case "near mint":
-        return "text-emerald-400";
-      case "excellent":
-        return "text-blue-400";
-      case "good":
-        return "text-yellow-400";
-      case "played":
-        return "text-orange-400";
-      case "poor":
-        return "text-red-500";
-      default:
-        return "text-gray-400";
-    }
-  };
-
   const handleQuantityChange = (increment: boolean) => {
     const newQuantity = increment ? localCard.quantity + 1 : Math.max(0, localCard.quantity - 1);
     const updatedCard = { ...localCard, quantity: newQuantity };
@@ -110,19 +85,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
       toast({
         title: increment ? "Card added" : "Card removed",
         description: `${updatedCard.name}: ${updatedCard.quantity} in collection`,
-      });
-    }
-  };
-
-  const handleConditionChange = (value: CardCondition) => {
-    const updatedCard = { ...localCard, condition: value };
-    setLocalCard(updatedCard);
-    
-    if (onUpdateCard) {
-      onUpdateCard(updatedCard);
-      toast({
-        title: "Condition updated",
-        description: `${updatedCard.name}: now marked as ${value}`,
       });
     }
   };
@@ -261,28 +223,6 @@ const CardDetail: React.FC<CardDetailProps> = ({
                           <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <span className="text-muted-foreground text-sm">Condition:</span>
-                    <div className="mt-1">
-                      <Select 
-                        value={localCard.condition || "played"} 
-                        onValueChange={(value) => handleConditionChange(value as CardCondition)}
-                      >
-                        <SelectTrigger className={getConditionColor(localCard.condition)}>
-                          <SelectValue placeholder="Select condition" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="mint" className="text-green-500">Mint</SelectItem>
-                          <SelectItem value="near mint" className="text-emerald-400">Near Mint</SelectItem>
-                          <SelectItem value="excellent" className="text-blue-400">Excellent</SelectItem>
-                          <SelectItem value="good" className="text-yellow-400">Good</SelectItem>
-                          <SelectItem value="played" className="text-orange-400">Played</SelectItem>
-                          <SelectItem value="poor" className="text-red-500">Poor</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </div>
                   </div>
                 </div>

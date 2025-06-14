@@ -11,7 +11,6 @@ interface DragDropCardProps {
   isDraggable?: boolean;
   isInDeck?: boolean;
   compact?: boolean;
-  showCondition?: boolean;
 }
 
 const DragDropCard: React.FC<DragDropCardProps> = ({
@@ -22,7 +21,6 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
   isDraggable = false,
   isInDeck = false,
   compact = false,
-  showCondition = true,
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     if (!isDraggable) return;
@@ -58,7 +56,6 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
         card={card}
         onClick={onClick}
         compact={compact}
-        showCondition={showCondition}
       />
     </div>
   );
