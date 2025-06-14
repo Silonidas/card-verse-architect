@@ -290,7 +290,7 @@ const DeckBuilder = () => {
                             key={card.id}
                             card={card}
                             onClick={() => handleCardClick(card)}
-                            onDragStart={() => handleRemoveFromDeck(card)}
+                            onDragStart={(card) => handleRemoveFromDeck(card)}
                             isDraggable={true}
                             isInDeck={true}
                             compact={true}
