@@ -24,8 +24,8 @@ interface CardDetailProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToDeck?: () => void;
-  onAddToCollection?: () => void;
   onUpdateCard?: (updatedCard: CardType) => void;
+  addToCollectionMode?: boolean;
 }
 
 const CardDetail: React.FC<CardDetailProps> = ({
@@ -33,8 +33,8 @@ const CardDetail: React.FC<CardDetailProps> = ({
   isOpen,
   onClose,
   onAddToDeck,
-  onAddToCollection,
   onUpdateCard,
+  addToCollectionMode = false,
 }) => {
   const [localCard, setLocalCard] = useState<CardType | null>(null);
 
@@ -140,13 +140,16 @@ const CardDetail: React.FC<CardDetailProps> = ({
     }
   };
 
+  // Determine if we're in browse mode (no onUpdateCard function means we're browsing, not managing collection)
+  const isBrowseMode = !onUpdateCard;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             {card.name}
-            {onUpdateCard && (
+            {!isBrowseMode && (
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -216,7 +219,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
               </div>
             )}
 
-            {onUpdateCard && (
+            {!isBrowseMode && (
               <div>
                 <p className="text-sm font-medium mb-1">Collection Details</p>
                 <div className="grid grid-cols-1 gap-4">
@@ -276,15 +279,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
                   onClick={onAddToDeck}
                   className="w-full bg-tcg-purple hover:bg-tcg-purple/90"
                 >
-                  Add to Deck
-                </Button>
-              )}
-              {onAddToCollection && (
-                <Button
-                  onClick={onAddToCollection}
-                  className="w-full bg-tcg-purple hover:bg-tcg-purple/90"
-                >
-                  Add to Collection
+                  {isBrowseMode ? "Add to Collection" : "Add to Deck"}
                 </Button>
               )}
               <Button

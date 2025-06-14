@@ -22,7 +22,8 @@ const CardBrowser = () => {
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
-  const [collectionCards, setCollectionCards] = useState<Card[]>([]);
+  // State for managing user's collection
+  const [userCollection, setUserCollection] = useState<Card[]>([]);
   
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
@@ -55,34 +56,39 @@ const CardBrowser = () => {
 
   const handleAddToCollection = () => {
     if (!selectedCard) return;
+
+    // Check if card already exists in collection
+    const existingCardIndex = userCollection.findIndex(card => card.id === selectedCard.id);
     
-    const existingCard = collectionCards.find(card => card.id === selectedCard.id);
-    
-    if (existingCard) {
-      // If card already exists, increment quantity
-      const updatedCards = collectionCards.map(card => 
-        card.id === selectedCard.id 
-          ? { ...card, quantity: card.quantity + 1 }
-          : card
-      );
-      setCollectionCards(updatedCards);
-      toast({
-        title: "Card added to collection",
-        description: `${selectedCard.name}: ${existingCard.quantity + 1} in collection`,
-      });
+    if (existingCardIndex >= 0) {
+      // Update quantity if card exists
+      const updatedCollection = [...userCollection];
+      updatedCollection[existingCardIndex] = {
+        ...updatedCollection[existingCardIndex],
+        quantity: updatedCollection[existingCardIndex].quantity + 1
+      };
+      setUserCollection(updatedCollection);
     } else {
-      // If card doesn't exist, add it with quantity 1 and default condition
+      // Add new card to collection
       const newCard = {
         ...selectedCard,
         quantity: 1,
         condition: "near mint" as const
       };
-      setCollectionCards([...collectionCards, newCard]);
-      toast({
-        title: "Card added to collection",
-        description: `${selectedCard.name} added to your collection`,
-      });
+      setUserCollection([...userCollection, newCard]);
     }
+
+    toast({
+      title: "Card added to collection",
+      description: `${selectedCard.name} has been added to your collection`,
+    });
+  };
+
+  const handleUpdateCard = (updatedCard: Card) => {
+    const updatedCollection = userCollection.map(card => 
+      card.id === updatedCard.id ? updatedCard : card
+    );
+    setUserCollection(updatedCollection);
   };
 
   // Listen for TCG changes from Layout component
@@ -99,6 +105,9 @@ const CardBrowser = () => {
       window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
     };
   }, []);
+
+  // Check if the selected card is in the user's collection
+  const selectedCardInCollection = selectedCard ? userCollection.find(card => card.id === selectedCard.id) : null;
 
   return (
     <>
@@ -152,10 +161,11 @@ const CardBrowser = () => {
       </div>
       
       <CardDetail
-        card={selectedCard}
+        card={selectedCardInCollection || selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
-        onAddToCollection={handleAddToCollection}
+        onAddToDeck={handleAddToCollection}
+        onUpdateCard={selectedCardInCollection ? handleUpdateCard : undefined}
       />
     </>
   );
