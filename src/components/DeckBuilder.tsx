@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card as CardType, Deck } from "@/types";
 import { sampleCards, sampleDecks } from "@/data/sampleCards";
@@ -78,6 +79,9 @@ const DeckBuilder = () => {
           description: `${card.name} added to deck`,
         });
       }
+    } else if (source === 'deck') {
+      // Remove card from deck (when dragged from deck and dropped outside)
+      handleRemoveFromDeck(card);
     }
   };
 
@@ -290,7 +294,6 @@ const DeckBuilder = () => {
                             key={card.id}
                             card={card}
                             onClick={() => handleCardClick(card)}
-                            onDragStart={(card) => handleRemoveFromDeck(card)}
                             isDraggable={true}
                             isInDeck={true}
                             compact={true}

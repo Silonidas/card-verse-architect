@@ -33,6 +33,7 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
     }));
     e.dataTransfer.effectAllowed = isInDeck ? 'move' : 'copy';
     
+    // Only call onDragStart if provided, but don't remove cards here
     onDragStart?.(card);
   };
 
