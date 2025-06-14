@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { toast } from "@/hooks/use-toast";
 
 const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,8 +21,6 @@ const CardBrowser = () => {
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
-  // State for managing user's collection
-  const [userCollection, setUserCollection] = useState<Card[]>([]);
   
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
@@ -54,43 +51,6 @@ const CardBrowser = () => {
     setIsCardDetailOpen(false);
   };
 
-  const handleAddToCollection = () => {
-    if (!selectedCard) return;
-
-    // Check if card already exists in collection
-    const existingCardIndex = userCollection.findIndex(card => card.id === selectedCard.id);
-    
-    if (existingCardIndex >= 0) {
-      // Update quantity if card exists
-      const updatedCollection = [...userCollection];
-      updatedCollection[existingCardIndex] = {
-        ...updatedCollection[existingCardIndex],
-        quantity: updatedCollection[existingCardIndex].quantity + 1
-      };
-      setUserCollection(updatedCollection);
-    } else {
-      // Add new card to collection
-      const newCard = {
-        ...selectedCard,
-        quantity: 1,
-        condition: "near mint" as const
-      };
-      setUserCollection([...userCollection, newCard]);
-    }
-
-    toast({
-      title: "Card added to collection",
-      description: `${selectedCard.name} has been added to your collection`,
-    });
-  };
-
-  const handleUpdateCard = (updatedCard: Card) => {
-    const updatedCollection = userCollection.map(card => 
-      card.id === updatedCard.id ? updatedCard : card
-    );
-    setUserCollection(updatedCollection);
-  };
-
   // Listen for TCG changes from Layout component
   useEffect(() => {
     const handleTCGChange = (event: Event) => {
@@ -105,9 +65,6 @@ const CardBrowser = () => {
       window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
     };
   }, []);
-
-  // Check if the selected card is in the user's collection
-  const selectedCardInCollection = selectedCard ? userCollection.find(card => card.id === selectedCard.id) : null;
 
   return (
     <>
@@ -161,11 +118,9 @@ const CardBrowser = () => {
       </div>
       
       <CardDetail
-        card={selectedCardInCollection || selectedCard}
+        card={selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
-        onAddToDeck={handleAddToCollection}
-        onUpdateCard={selectedCardInCollection ? handleUpdateCard : undefined}
       />
     </>
   );
