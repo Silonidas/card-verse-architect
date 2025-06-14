@@ -33,15 +33,11 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
     }));
     e.dataTransfer.effectAllowed = isInDeck ? 'move' : 'copy';
     
-    if (onDragStart) {
-      onDragStart(card);
-    }
+    onDragStart?.(card);
   };
 
   const handleDragEnd = () => {
-    if (onDragEnd) {
-      onDragEnd();
-    }
+    onDragEnd?.();
   };
 
   return (
