@@ -17,13 +17,13 @@ const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Dragon Ball Super Card Game Fusion World");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
   
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
   
-  // Use the dynamic card types from the data but only display the specified ones in the UI
-  const cardTypes = ["leader", "battle", "extra"];
+  // Use the dynamic card types from the data
+  const cardTypes = ["digimon", "tamer", "option"];
   const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
 
   const filteredCards = tcgCards.filter((card) => {

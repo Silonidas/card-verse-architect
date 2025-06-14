@@ -5,7 +5,7 @@ import Collection from "@/components/Collection";
 import { TCGType } from "@/types";
 
 const CollectionPage = () => {
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Dragon Ball Super Card Game Fusion World");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
 
   // Listen for TCG changes from Layout component
   useEffect(() => {

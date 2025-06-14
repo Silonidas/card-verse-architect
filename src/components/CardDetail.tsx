@@ -45,15 +45,16 @@ const CardDetail: React.FC<CardDetailProps> = ({
   if (!card || !localCard) return null;
 
   const getRarityColor = (rarity: string, tcg: string) => {
-    // Dragon Ball Super rarities
-    if (tcg === "Dragon Ball Super Card Game Fusion World") {
+    // Digimon Card Game 2020 rarities
+    if (tcg === "Digimon Card Game 2020") {
       switch (rarity) {
         case "C": return "bg-gray-400";  // Common
-        case "UC": return "bg-blue-400"; // Uncommon
+        case "U": return "bg-blue-400"; // Uncommon
         case "R": return "bg-tcg-purple"; // Rare
         case "SR": return "holo-badge"; // Super Rare - holographic effect
-        case "SCR": return "holo-badge-scr"; // Secret Rare - enhanced holographic effect
-        case "PR": return "bg-green-500"; // Promo
+        case "SEC": return "holo-badge-scr"; // Secret Rare - enhanced holographic effect
+        case "P": return "bg-green-500"; // Promo
+        case "AA": return "bg-yellow-500"; // Alternative Art
         default: return "bg-gray-400";
       }
     }
