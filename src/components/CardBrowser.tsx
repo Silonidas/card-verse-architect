@@ -84,6 +84,13 @@ const CardBrowser = () => {
     });
   };
 
+  const handleUpdateCard = (updatedCard: Card) => {
+    const updatedCollection = userCollection.map(card => 
+      card.id === updatedCard.id ? updatedCard : card
+    );
+    setUserCollection(updatedCollection);
+  };
+
   // Listen for TCG changes from Layout component
   useEffect(() => {
     const handleTCGChange = (event: Event) => {
@@ -98,6 +105,9 @@ const CardBrowser = () => {
       window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
     };
   }, []);
+
+  // Check if the selected card is in the user's collection
+  const selectedCardInCollection = selectedCard ? userCollection.find(card => card.id === selectedCard.id) : null;
 
   return (
     <>
@@ -151,10 +161,11 @@ const CardBrowser = () => {
       </div>
       
       <CardDetail
-        card={selectedCard}
+        card={selectedCardInCollection || selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
         onAddToDeck={handleAddToCollection}
+        onUpdateCard={selectedCardInCollection ? handleUpdateCard : undefined}
       />
     </>
   );
