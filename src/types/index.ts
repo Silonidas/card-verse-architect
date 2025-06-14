@@ -1,12 +1,17 @@
 
 export type DragonBallRarity = "C" | "UC" | "R" | "SR" | "SCR" | "PR";
 
-export type CardRarity = DragonBallRarity;
+export type DigimonRarity = "C" | "U" | "R" | "SR" | "SEC" | "P" | "AA";
+
+export type CardRarity = DragonBallRarity | DigimonRarity;
 
 export type CardType = 
   | "leader" 
   | "battle" 
-  | "extra";
+  | "extra"
+  | "digimon"
+  | "tamer"
+  | "option";
 
 export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "played" | "poor";
 

@@ -22,8 +22,16 @@ const CardBrowser = () => {
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
   
-  // Use the dynamic card types from the data but only display the specified ones in the UI
-  const cardTypes = ["leader", "battle", "extra"];
+  // Get dynamic card types and rarities based on the current TCG
+  const getCardTypesForTCG = (tcg: TCGType) => {
+    if (tcg === "Digimon Card Game 2020") {
+      return ["digimon", "tamer", "option"];
+    }
+    // Default for Dragon Ball Super and other TCGs
+    return ["leader", "battle", "extra"];
+  };
+  
+  const cardTypes = getCardTypesForTCG(currentTCG);
   const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
 
   const filteredCards = tcgCards.filter((card) => {
