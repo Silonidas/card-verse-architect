@@ -326,6 +326,7 @@ const DeckBuilder = () => {
                       onClick={() => handleCardClick(card, 'deck')}
                       isDraggable={true}
                       isInDeck={false}
+                      showCondition={false}
                     />
                   ))}
                 </div>
