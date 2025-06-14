@@ -298,6 +298,7 @@ const DeckBuilder = () => {
                             isDraggable={true}
                             isInDeck={true}
                             compact={true}
+                            showCondition={false}
                           />
                         ))}
                       </div>
