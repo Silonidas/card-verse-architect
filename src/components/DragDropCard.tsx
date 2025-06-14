@@ -6,7 +6,7 @@ import CardItem from './CardItem';
 interface DragDropCardProps {
   card: Card;
   onClick: (card: Card) => void;
-  onDragStart?: (card: Card) => void;
+  onDragStart?: () => void;
   onDragEnd?: () => void;
   isDraggable?: boolean;
   isInDeck?: boolean;
@@ -34,7 +34,7 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
     e.dataTransfer.effectAllowed = isInDeck ? 'move' : 'copy';
     
     if (onDragStart) {
-      onDragStart(card);
+      onDragStart();
     }
   };
 
