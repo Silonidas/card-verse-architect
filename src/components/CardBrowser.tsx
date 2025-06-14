@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { toast } from "@/hooks/use-toast";
 
 const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +22,7 @@ const CardBrowser = () => {
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
+  const [collectionCards, setCollectionCards] = useState<Card[]>([]);
   
   // Filter cards based on the current TCG first
   const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
@@ -49,6 +51,38 @@ const CardBrowser = () => {
 
   const closeCardDetail = () => {
     setIsCardDetailOpen(false);
+  };
+
+  const handleAddToCollection = () => {
+    if (!selectedCard) return;
+    
+    const existingCard = collectionCards.find(card => card.id === selectedCard.id);
+    
+    if (existingCard) {
+      // If card already exists, increment quantity
+      const updatedCards = collectionCards.map(card => 
+        card.id === selectedCard.id 
+          ? { ...card, quantity: card.quantity + 1 }
+          : card
+      );
+      setCollectionCards(updatedCards);
+      toast({
+        title: "Card added to collection",
+        description: `${selectedCard.name}: ${existingCard.quantity + 1} in collection`,
+      });
+    } else {
+      // If card doesn't exist, add it with quantity 1 and default condition
+      const newCard = {
+        ...selectedCard,
+        quantity: 1,
+        condition: "near mint" as const
+      };
+      setCollectionCards([...collectionCards, newCard]);
+      toast({
+        title: "Card added to collection",
+        description: `${selectedCard.name} added to your collection`,
+      });
+    }
   };
 
   // Listen for TCG changes from Layout component
@@ -121,6 +155,7 @@ const CardBrowser = () => {
         card={selectedCard}
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
+        onAddToCollection={handleAddToCollection}
       />
     </>
   );
