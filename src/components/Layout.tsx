@@ -17,7 +17,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Dragon Ball Super Card Game Fusion World");
+  const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Digimon Card Game 2020");
   
   const navItems = [
     { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
@@ -26,9 +26,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: "/collection", label: "Collection", icon: <Library className="h-5 w-5" /> },
   ];
 
-  // Updated to only include Dragon Ball but structured for easy expansion
+  // Updated to only include Digimon but structured for easy expansion
   const tcgOptions: TCGType[] = [
-    "Dragon Ball Super Card Game Fusion World"
+    "Digimon Card Game 2020"
     // Add new TCGs here in the future
   ];
 
@@ -50,7 +50,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Button variant="ghost" className="flex items-center space-x-2 px-0 hover:bg-transparent">
                   <Library className="h-6 w-6 text-primary" />
                   <span className="font-bold text-xl">CardVerse</span>
-                  <span className="text-xs text-muted-foreground">({currentTCG})</span>
                   {tcgOptions.length > 1 && (
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   )}
