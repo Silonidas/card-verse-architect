@@ -17,7 +17,6 @@ const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
-  const [filterCondition, setFilterCondition] = useState("all");
   const [currentTCG, setCurrentTCG] = useState<TCGType>("Dragon Ball Super Card Game Fusion World");
   
   // Filter cards based on the current TCG first
@@ -26,23 +25,18 @@ const CardBrowser = () => {
   // Use the dynamic card types from the data but only display the specified ones in the UI
   const cardTypes = ["leader", "battle", "extra"];
   const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
-  const conditions = Array.from(
-    new Set(tcgCards.filter(card => card.condition).map((card) => card.condition))
-  ) as string[];
 
   const filteredCards = tcgCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || card.type === filterType;
     const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
-    const matchesCondition = filterCondition === "all" || card.condition === filterCondition;
-    return matchesSearch && matchesType && matchesRarity && matchesCondition;
+    return matchesSearch && matchesType && matchesRarity;
   });
 
   const clearFilters = () => {
     setSearchTerm("");
     setFilterType("all");
     setFilterRarity("all");
-    setFilterCondition("all");
   };
 
   // Listen for TCG changes from Layout component
@@ -99,19 +93,6 @@ const CardBrowser = () => {
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterCondition} onValueChange={setFilterCondition}>
-            <SelectTrigger>
-              <SelectValue placeholder="All Conditions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Conditions</SelectItem>
-              {conditions.map((condition) => (
-                <SelectItem key={condition} value={condition} className="capitalize">
-                  {condition}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
@@ -119,6 +100,7 @@ const CardBrowser = () => {
         filteredCards={filteredCards} 
         onCardClick={() => {}} 
         clearFilters={clearFilters} 
+        showCondition={false}
       />
     </div>
   );

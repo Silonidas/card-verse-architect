@@ -8,6 +8,7 @@ interface CardItemProps {
   card: CardType;
   onClick?: () => void;
   compact?: boolean;
+  showCondition?: boolean;
 }
 
 // Made the color function more generic for easy addition of new TCGs
@@ -64,7 +65,7 @@ const getConditionColor = (condition: CardCondition | undefined) => {
   }
 };
 
-const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) => {
+const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false, showCondition = true }) => {
   // Get the display rarity text - returns the rarity as is
   const getRarityDisplayText = (rarity: string) => {
     return rarity;
@@ -95,7 +96,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         </div>
       )}
       
-      {!compact && card.condition && (
+      {!compact && showCondition && card.condition && (
         <div className="absolute top-10 right-2 z-10">
           <Badge variant="secondary" className={`${getConditionColor(card.condition)} text-white capitalize`}>
             {card.condition}
