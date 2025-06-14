@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card as CardType, Deck } from "@/types";
 import { sampleCards, sampleDecks } from "@/data/sampleCards";
@@ -39,6 +38,7 @@ const DeckBuilder = () => {
   const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
   const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
   const [deckCards, setDeckCards] = useState<CardType[]>([]);
+  const [cardDetailContext, setCardDetailContext] = useState<'browse' | 'deck' | 'collection'>('browse');
 
   React.useEffect(() => {
     if (activeDeck) {
@@ -46,8 +46,9 @@ const DeckBuilder = () => {
     }
   }, [activeDeck]);
 
-  const handleCardClick = (card: CardType) => {
+  const handleCardClick = (card: CardType, context: 'browse' | 'deck' | 'collection' = 'browse') => {
     setSelectedCard(card);
+    setCardDetailContext(context);
     setIsCardDetailOpen(true);
   };
 
@@ -293,7 +294,7 @@ const DeckBuilder = () => {
                           <DragDropCard
                             key={card.id}
                             card={card}
-                            onClick={() => handleCardClick(card)}
+                            onClick={() => handleCardClick(card, 'deck')}
                             isDraggable={true}
                             isInDeck={true}
                             compact={true}
@@ -322,7 +323,7 @@ const DeckBuilder = () => {
                     <DragDropCard
                       key={card.id}
                       card={card}
-                      onClick={() => handleCardClick(card)}
+                      onClick={() => handleCardClick(card, 'deck')}
                       isDraggable={true}
                       isInDeck={false}
                     />
@@ -338,6 +339,7 @@ const DeckBuilder = () => {
           isOpen={isCardDetailOpen}
           onClose={closeCardDetail}
           onAddToDeck={handleAddToDeck}
+          context={cardDetailContext}
         />
       </div>
     </DeckDropZone>

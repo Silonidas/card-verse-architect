@@ -157,6 +157,7 @@ const CardBrowser = () => {
           isOpen={isCardDetailOpen}
           onClose={closeCardDetail}
           onAddToDeck={handleAddToCollection}
+          context="browse"
         />
       </>
     );
@@ -224,6 +225,7 @@ const CardBrowser = () => {
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
         onAddToDeck={handleAddToCollection}
+        context="browse"
       />
     </>
   );

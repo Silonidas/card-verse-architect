@@ -25,6 +25,7 @@ interface CardDetailProps {
   onClose: () => void;
   onAddToDeck?: () => void;
   onUpdateCard?: (updatedCard: CardType) => void;
+  context?: 'browse' | 'deck' | 'collection';
 }
 
 const CardDetail: React.FC<CardDetailProps> = ({
@@ -33,6 +34,7 @@ const CardDetail: React.FC<CardDetailProps> = ({
   onClose,
   onAddToDeck,
   onUpdateCard,
+  context = 'browse',
 }) => {
   const [localCard, setLocalCard] = useState<CardType | null>(null);
 
@@ -140,6 +142,22 @@ const CardDetail: React.FC<CardDetailProps> = ({
 
   // Check if this is a collection card (has quantity > 0) or a browse card
   const isCollectionCard = localCard.quantity > 0;
+
+  // Determine button text and action based on context
+  const getButtonConfig = () => {
+    switch (context) {
+      case 'deck':
+        return { text: 'Add to Deck', action: onAddToDeck };
+      case 'browse':
+        return { text: 'Add to Collection', action: onAddToDeck };
+      case 'collection':
+        return null; // No add button for collection view
+      default:
+        return { text: 'Add to Collection', action: onAddToDeck };
+    }
+  };
+
+  const buttonConfig = getButtonConfig();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -272,12 +290,12 @@ const CardDetail: React.FC<CardDetailProps> = ({
             )}
 
             <div className="pt-2 flex space-x-2">
-              {onAddToDeck && (
+              {buttonConfig && (
                 <Button
-                  onClick={onAddToDeck}
+                  onClick={buttonConfig.action}
                   className="w-full bg-tcg-purple hover:bg-tcg-purple/90"
                 >
-                  Add to Collection
+                  {buttonConfig.text}
                 </Button>
               )}
               <Button
