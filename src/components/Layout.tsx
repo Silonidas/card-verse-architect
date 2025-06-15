@@ -113,7 +113,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {user?.email}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center justify-between">
+                <DropdownMenuItem 
+                  className="flex items-center justify-between"
+                  onSelect={(e) => e.preventDefault()}
+                >
                   <div className="flex items-center">
                     {theme === 'dark' ? (
                       <Moon className="h-4 w-4 mr-2" />
