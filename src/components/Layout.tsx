@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BookOpen, Library, LayoutGrid, Search, ChevronDown, LogOut, User, Sun, Moon } from "lucide-react";
@@ -9,6 +8,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { TCGType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -98,6 +98,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ))}
             </nav>
             
+            {/* Theme Toggle */}
+            <div className="flex items-center space-x-2">
+              <Sun className="h-4 w-4" />
+              <Switch 
+                checked={theme === 'dark'} 
+                onCheckedChange={toggleTheme}
+                aria-label="Toggle theme"
+              />
+              <Moon className="h-4 w-4" />
+            </div>
+            
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -110,20 +121,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <DropdownMenuItem disabled>
                   <User className="h-4 w-4 mr-2" />
                   {user?.email}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={toggleTheme}>
-                  {theme === 'dark' ? (
-                    <>
-                      <Sun className="h-4 w-4 mr-2" />
-                      Switch to light theme
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="h-4 w-4 mr-2" />
-                      Switch to dark theme
-                    </>
-                  )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
