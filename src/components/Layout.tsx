@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   
   const navItems = [
     { path: "/", label: "Dashboard", icon: <LayoutGrid className="h-5 w-5" /> },
-    { path: "/browse", label: "Browse", icon: <Search className="h-5 w-5" /> },
+    { path: "/browse", label: "Database", icon: <Search className="h-5 w-5" /> },
     { path: "/decks", label: "Decks", icon: <BookOpen className="h-5 w-5" /> },
     { path: "/collection", label: "Collection", icon: <Library className="h-5 w-5" /> },
   ];
