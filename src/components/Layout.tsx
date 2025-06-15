@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BookOpen, Library, LayoutGrid, Search, ChevronDown, LogOut, User, Sun, Moon } from "lucide-react";
@@ -98,17 +99,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ))}
             </nav>
             
-            {/* Theme Toggle */}
-            <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
-              <Switch 
-                checked={theme === 'dark'} 
-                onCheckedChange={toggleTheme}
-                aria-label="Toggle theme"
-              />
-              <Moon className="h-4 w-4" />
-            </div>
-            
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -121,6 +111,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <DropdownMenuItem disabled>
                   <User className="h-4 w-4 mr-2" />
                   {user?.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    {theme === 'dark' ? (
+                      <Moon className="h-4 w-4 mr-2" />
+                    ) : (
+                      <Sun className="h-4 w-4 mr-2" />
+                    )}
+                    Theme
+                  </div>
+                  <Switch 
+                    checked={theme === 'dark'} 
+                    onCheckedChange={toggleTheme}
+                    aria-label="Toggle theme"
+                  />
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
