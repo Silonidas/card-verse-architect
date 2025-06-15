@@ -1,15 +1,17 @@
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Library, LayoutGrid, Search, ChevronDown } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BookOpen, Library, LayoutGrid, Search, ChevronDown, LogOut, User } from "lucide-react";
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { TCGType } from "../types";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,6 +19,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Digimon Card Game 2020");
   
   const navItems = [
@@ -37,6 +41,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // You could dispatch an event or use context to notify other components
     const event = new CustomEvent('tcgChanged', { detail: tcg });
     window.dispatchEvent(event);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -86,6 +95,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Link>
               ))}
             </nav>
+            
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden md:inline">{user?.username}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem disabled>
+                  <User className="h-4 w-4 mr-2" />
+                  {user?.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
