@@ -5,15 +5,12 @@ import { sampleCards, sampleDecks } from "@/data/sampleCards";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Layout from "@/components/Layout";
-import { BookOpen, Search, Library, LayoutGrid, Star } from "lucide-react";
+import { BookOpen, Search, Library } from "lucide-react";
 import CardItem from "@/components/CardItem";
 
 const Index = () => {
   // Get a few recent cards
   const recentCards = sampleCards.slice(0, 4);
-  
-  // Get favorited cards
-  const favoriteCards = sampleCards.filter(card => card.favorite === true).slice(0, 4);
   
   // Calculate collection stats
   const totalCards = sampleCards.reduce((sum, card) => sum + card.quantity, 0);
@@ -29,7 +26,7 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Cards</CardTitle>
@@ -54,41 +51,7 @@ const Index = () => {
               </p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Card Types</CardTitle>
-              <LayoutGrid className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{new Set(sampleCards.map(card => card.type)).size}</div>
-              <p className="text-xs text-muted-foreground">
-                Different card types
-              </p>
-            </CardContent>
-          </Card>
         </div>
-
-        {favoriteCards.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold flex items-center">
-                <Star className="mr-2 fill-yellow-400 text-yellow-400" size={24} />
-                Favorite Cards
-              </h2>
-              <Link to="/browse?favorites=true">
-                <Button variant="outline">View All</Button>
-              </Link>
-            </div>
-
-            <div className="card-grid">
-              {favoriteCards.map((card) => (
-                <Link key={card.id} to={`/browse?card=${card.id}`}>
-                  <CardItem card={card} />
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">

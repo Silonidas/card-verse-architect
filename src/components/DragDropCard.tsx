@@ -42,6 +42,10 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
     }
   };
 
+  const handleClick = () => {
+    onClick(card);
+  };
+
   return (
     <div
       draggable={isDraggable}
@@ -54,7 +58,7 @@ const DragDropCard: React.FC<DragDropCardProps> = ({
     >
       <CardItem
         card={card}
-        onClick={onClick}
+        onClick={handleClick}
         compact={compact}
       />
     </div>
