@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BookOpen, Library, LayoutGrid, Search, ChevronDown, LogOut, User } from "lucide-react";
+import { BookOpen, Library, LayoutGrid, Search, ChevronDown, LogOut, User, Sun, Moon } from "lucide-react";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
 import { TCGType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [currentTCG, setCurrentTCG] = React.useState<TCGType>("Digimon Card Game 2020");
   
   const navItems = [
@@ -108,6 +110,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <DropdownMenuItem disabled>
                   <User className="h-4 w-4 mr-2" />
                   {user?.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={toggleTheme}>
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun className="h-4 w-4 mr-2" />
+                      Switch to light theme
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="h-4 w-4 mr-2" />
+                      Switch to dark theme
+                    </>
+                  )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
