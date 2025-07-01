@@ -343,7 +343,7 @@ const DeckBuilder = () => {
                             </Pie>
                             <ChartTooltip content={<ChartTooltipContent />} />
                           </PieChart>
-                        </ResponsiveContext>
+                        </ResponsiveContainer>
                       </ChartContainer>
                     </CardContent>
                   </Card>
