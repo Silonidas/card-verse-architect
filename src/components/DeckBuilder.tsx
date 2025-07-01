@@ -257,28 +257,28 @@ const DeckBuilder = () => {
                 <TabsTrigger value="add">Add Cards</TabsTrigger>
               </TabsList>
               <TabsContent value="deck" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="md:col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={memoryCurveData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                          <BarChart data={memoryCurveData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                             <XAxis 
                               dataKey="cost" 
                               axisLine={false}
                               tickLine={false}
-                              tick={{ fontSize: 12 }}
+                              tick={{ fontSize: 10 }}
                             />
                             <YAxis 
                               axisLine={false}
                               tickLine={false}
-                              tick={{ fontSize: 12 }}
+                              tick={{ fontSize: 10 }}
                             />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </ChartContainer>
@@ -290,15 +290,15 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">Colors</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
                               data={colorData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={30}
-                              outerRadius={80}
+                              innerRadius={25}
+                              outerRadius={70}
                               dataKey="value"
                             >
                               {colorData.map((entry, index) => (
@@ -317,15 +317,15 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">DP Distribution</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
                               data={dpData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={30}
-                              outerRadius={80}
+                              innerRadius={25}
+                              outerRadius={70}
                               dataKey="value"
                             >
                               {dpData.map((entry, index) => (
@@ -368,12 +368,23 @@ const DeckBuilder = () => {
                 </div>
 
                 <div>
-                  {Object.entries(groupedCardsByType).map(([type, cards]) => <div key={type} className="mb-6">
+                  {Object.entries(groupedCardsByType).map(([type, cards]) => (
+                    <div key={type} className="mb-6">
                       <h3 className="font-bold text-lg mb-2 capitalize">{type} ({cards.length})</h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {cards.map(card => <DragDropCard key={card.id} card={card} onClick={() => handleCardClick(card, 'deck')} isDraggable={true} isInDeck={true} compact={true} />)}
+                        {cards.map(card => (
+                          <DragDropCard 
+                            key={card.id} 
+                            card={card} 
+                            onClick={() => handleCardClick(card, 'deck')} 
+                            isDraggable={true} 
+                            isInDeck={true} 
+                            compact={true} 
+                          />
+                        ))}
                       </div>
-                    </div>)}
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
               <TabsContent value="add" className="space-y-4">
@@ -392,8 +403,15 @@ const DeckBuilder = () => {
           </div>
         )}
 
-        <CardDetail card={selectedCard} isOpen={isCardDetailOpen} onClose={closeCardDetail} onAddToDeck={handleAddToDeck} context={cardDetailContext} />
+        <CardDetail 
+          card={selectedCard} 
+          isOpen={isCardDetailOpen} 
+          onClose={closeCardDetail} 
+          onAddToDeck={handleAddToDeck} 
+          context={cardDetailContext} 
+        />
       </div>
     </DeckDropZone>;
 };
+
 export default DeckBuilder;
