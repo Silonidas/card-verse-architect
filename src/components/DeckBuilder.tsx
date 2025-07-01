@@ -12,6 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
 const DeckBuilder = () => {
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
@@ -98,6 +101,43 @@ const DeckBuilder = () => {
     acc[type].push(card);
     return acc;
   }, {} as Record<string, CardType[]>);
+
+  // Prepare chart data
+  const manaCurveData = [
+    { cost: '0', count: deckCards.filter(c => c.manaCost === '0').length },
+    { cost: '1', count: deckCards.filter(c => c.manaCost === '1').length },
+    { cost: '2', count: deckCards.filter(c => c.manaCost === '2').length },
+    { cost: '3', count: deckCards.filter(c => c.manaCost === '3').length },
+    { cost: '4', count: deckCards.filter(c => c.manaCost === '4').length },
+    { cost: '5', count: deckCards.filter(c => c.manaCost === '5').length },
+    { cost: '6+', count: deckCards.filter(c => parseInt(c.manaCost || '0') >= 6).length },
+  ];
+
+  const colorData = [
+    { name: 'Red', value: deckCards.filter(c => c.name.includes('Red') || c.type === 'digimon').length, color: '#ef4444' },
+    { name: 'Blue', value: deckCards.filter(c => c.name.includes('Blue') || c.type === 'tamer').length, color: '#3b82f6' },
+    { name: 'Green', value: deckCards.filter(c => c.name.includes('Green') || c.type === 'option').length, color: '#22c55e' },
+    { name: 'Yellow', value: deckCards.filter(c => c.name.includes('Yellow')).length, color: '#eab308' },
+    { name: 'Purple', value: deckCards.filter(c => c.name.includes('Purple')).length, color: '#a855f7' },
+  ].filter(item => item.value > 0);
+
+  const rarityData = Array.from(new Set(deckCards.map(c => c.rarity))).map(rarity => ({
+    name: rarity.toUpperCase(),
+    value: deckCards.filter(c => c.rarity === rarity).length,
+    color: rarity === 'C' ? '#94a3b8' : rarity === 'U' ? '#22c55e' : rarity === 'R' ? '#3b82f6' : rarity === 'SR' ? '#a855f7' : '#f59e0b'
+  }));
+
+  const typeData = Object.entries(groupedCardsByType).map(([type, cards]) => ({
+    name: type.charAt(0).toUpperCase() + type.slice(1),
+    value: cards.length,
+    color: type === 'digimon' ? '#3b82f6' : type === 'tamer' ? '#f97316' : '#ef4444'
+  }));
+
+  const chartConfig = {
+    count: { label: "Count", color: "hsl(var(--chart-1))" },
+    value: { label: "Value", color: "hsl(var(--chart-2))" }
+  };
+
   return <DeckDropZone onCardDrop={handleCardDrop}>
       <div className="space-y-6">
         {!activeDeck ? <>
@@ -179,47 +219,95 @@ const DeckBuilder = () => {
                 <TabsTrigger value="add">Add Cards</TabsTrigger>
               </TabsList>
               <TabsContent value="deck" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
+                      <CardTitle className="text-sm font-medium">Mana Curve</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-[100px] flex items-end justify-around">
-                        {[1, 2, 3, 4, 5, 6].map(cost => <div key={cost} className="flex flex-col items-center">
-                            <div className="w-6 bg-primary rounded-t" style={{
-                        height: `${Math.random() * 80 + 10}px`
-                      }}></div>
-                            <span className="text-xs mt-1">{cost}</span>
-                          </div>)}
-                      </div>
+                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
+                        <BarChart data={manaCurveData}>
+                          <XAxis dataKey="cost" />
+                          <YAxis />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="count" fill="var(--color-count)" />
+                        </BarChart>
+                      </ChartContainer>
                     </CardContent>
                   </Card>
+
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Card Types
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Colors</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(groupedCardsByType).map(([type, cards]) => <Badge key={type} variant="outline" className="capitalize">
-                            {type}: {cards.length}
-                          </Badge>)}
-                      </div>
+                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
+                        <PieChart>
+                          <Pie
+                            data={colorData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={20}
+                            outerRadius={50}
+                            dataKey="value"
+                          >
+                            {colorData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ChartContainer>
                     </CardContent>
                   </Card>
+
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Rarities
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Rarities</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                      {Array.from(new Set(deckCards.map(c => c.rarity))).map(rarity => <Badge key={rarity} variant="outline" className="capitalize">
-                          {rarity}:{" "}
-                          {deckCards.filter(c => c.rarity === rarity).length}
-                        </Badge>)}
+                    <CardContent>
+                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
+                        <PieChart>
+                          <Pie
+                            data={rarityData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={20}
+                            outerRadius={50}
+                            dataKey="value"
+                          >
+                            {rarityData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Card Types</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
+                        <PieChart>
+                          <Pie
+                            data={typeData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={20}
+                            outerRadius={50}
+                            dataKey="value"
+                          >
+                            {typeData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ChartContainer>
                     </CardContent>
                   </Card>
                 </div>
