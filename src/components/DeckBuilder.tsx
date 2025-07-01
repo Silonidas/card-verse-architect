@@ -102,34 +102,48 @@ const DeckBuilder = () => {
     return acc;
   }, {} as Record<string, CardType[]>);
 
-  // Prepare chart data
-  const manaCurveData = [
-    { cost: '0', count: deckCards.filter(c => c.manaCost === '0').length },
-    { cost: '1', count: deckCards.filter(c => c.manaCost === '1').length },
-    { cost: '2', count: deckCards.filter(c => c.manaCost === '2').length },
-    { cost: '3', count: deckCards.filter(c => c.manaCost === '3').length },
-    { cost: '4', count: deckCards.filter(c => c.manaCost === '4').length },
-    { cost: '5', count: deckCards.filter(c => c.manaCost === '5').length },
-    { cost: '6+', count: deckCards.filter(c => parseInt(c.manaCost || '0') >= 6).length },
+  // Prepare chart data - Updated memory curve
+  const memoryCurveData = [
+    { cost: '0', count: deckCards.filter(c => c.manaCost === '0').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '1', count: deckCards.filter(c => c.manaCost === '1').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '2', count: deckCards.filter(c => c.manaCost === '2').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '3', count: deckCards.filter(c => c.manaCost === '3').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '4', count: deckCards.filter(c => c.manaCost === '4').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '5', count: deckCards.filter(c => c.manaCost === '5').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '6+', count: deckCards.filter(c => parseInt(c.manaCost || '0') >= 6).reduce((sum, card) => sum + card.quantity, 0) },
   ];
 
   const colorData = [
-    { name: 'Red', value: deckCards.filter(c => c.name.includes('Red') || c.type === 'digimon').length, color: '#ef4444' },
-    { name: 'Blue', value: deckCards.filter(c => c.name.includes('Blue') || c.type === 'tamer').length, color: '#3b82f6' },
-    { name: 'Green', value: deckCards.filter(c => c.name.includes('Green') || c.type === 'option').length, color: '#22c55e' },
-    { name: 'Yellow', value: deckCards.filter(c => c.name.includes('Yellow')).length, color: '#eab308' },
-    { name: 'Purple', value: deckCards.filter(c => c.name.includes('Purple')).length, color: '#a855f7' },
+    { name: 'Red', value: deckCards.filter(c => c.name.includes('Red') || c.type === 'digimon').reduce((sum, card) => sum + card.quantity, 0), color: '#ef4444' },
+    { name: 'Blue', value: deckCards.filter(c => c.name.includes('Blue') || c.type === 'tamer').reduce((sum, card) => sum + card.quantity, 0), color: '#3b82f6' },
+    { name: 'Green', value: deckCards.filter(c => c.name.includes('Green') || c.type === 'option').reduce((sum, card) => sum + card.quantity, 0), color: '#22c55e' },
+    { name: 'Yellow', value: deckCards.filter(c => c.name.includes('Yellow')).reduce((sum, card) => sum + card.quantity, 0), color: '#eab308' },
+    { name: 'Purple', value: deckCards.filter(c => c.name.includes('Purple')).reduce((sum, card) => sum + card.quantity, 0), color: '#a855f7' },
   ].filter(item => item.value > 0);
 
-  const rarityData = Array.from(new Set(deckCards.map(c => c.rarity))).map(rarity => ({
-    name: rarity.toUpperCase(),
-    value: deckCards.filter(c => c.rarity === rarity).length,
-    color: rarity === 'C' ? '#94a3b8' : rarity === 'U' ? '#22c55e' : rarity === 'R' ? '#3b82f6' : rarity === 'SR' ? '#a855f7' : '#f59e0b'
-  }));
+  // Updated DP data instead of rarity
+  const dpData = [
+    { name: '0-2000', value: deckCards.filter(c => {
+      const power = parseInt(c.power || '0');
+      return power >= 0 && power <= 2000;
+    }).reduce((sum, card) => sum + card.quantity, 0), color: '#94a3b8' },
+    { name: '3000-5000', value: deckCards.filter(c => {
+      const power = parseInt(c.power || '0');
+      return power >= 3000 && power <= 5000;
+    }).reduce((sum, card) => sum + card.quantity, 0), color: '#22c55e' },
+    { name: '6000-8000', value: deckCards.filter(c => {
+      const power = parseInt(c.power || '0');
+      return power >= 6000 && power <= 8000;
+    }).reduce((sum, card) => sum + card.quantity, 0), color: '#3b82f6' },
+    { name: '9000+', value: deckCards.filter(c => {
+      const power = parseInt(c.power || '0');
+      return power >= 9000;
+    }).reduce((sum, card) => sum + card.quantity, 0), color: '#a855f7' },
+  ].filter(item => item.value > 0);
 
   const typeData = Object.entries(groupedCardsByType).map(([type, cards]) => ({
     name: type.charAt(0).toUpperCase() + type.slice(1),
-    value: cards.length,
+    value: cards.reduce((sum, card) => sum + card.quantity, 0),
     color: type === 'digimon' ? '#3b82f6' : type === 'tamer' ? '#f97316' : '#ef4444'
   }));
 
@@ -222,11 +236,11 @@ const DeckBuilder = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Mana Curve</CardTitle>
+                      <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <ChartContainer config={chartConfig} className="h-[120px] w-full">
-                        <BarChart data={manaCurveData}>
+                        <BarChart data={memoryCurveData}>
                           <XAxis dataKey="cost" />
                           <YAxis />
                           <ChartTooltip content={<ChartTooltipContent />} />
@@ -263,20 +277,20 @@ const DeckBuilder = () => {
 
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Rarities</CardTitle>
+                      <CardTitle className="text-sm font-medium">DP Distribution</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <ChartContainer config={chartConfig} className="h-[120px] w-full">
                         <PieChart>
                           <Pie
-                            data={rarityData}
+                            data={dpData}
                             cx="50%"
                             cy="50%"
                             innerRadius={20}
                             outerRadius={50}
                             dataKey="value"
                           >
-                            {rarityData.map((entry, index) => (
+                            {dpData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
