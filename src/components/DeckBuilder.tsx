@@ -110,7 +110,10 @@ const DeckBuilder = () => {
     { cost: '3', count: deckCards.filter(c => c.manaCost === '3').reduce((sum, card) => sum + card.quantity, 0) },
     { cost: '4', count: deckCards.filter(c => c.manaCost === '4').reduce((sum, card) => sum + card.quantity, 0) },
     { cost: '5', count: deckCards.filter(c => c.manaCost === '5').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '6+', count: deckCards.filter(c => parseInt(c.manaCost || '0') >= 6).reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '6+', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost >= 6;
+    }).reduce((sum, card) => sum + card.quantity, 0) },
   ];
 
   const colorData = [
@@ -154,7 +157,8 @@ const DeckBuilder = () => {
 
   return <DeckDropZone onCardDrop={handleCardDrop}>
       <div className="space-y-6">
-        {!activeDeck ? <>
+        {!activeDeck ? (
+          <>
             <div className="flex justify-between">
               <h2 className="text-2xl font-bold">My Decks</h2>
               <Dialog open={isCreateDeckOpen} onOpenChange={setIsCreateDeckOpen}>
@@ -211,7 +215,9 @@ const DeckBuilder = () => {
                   </CardFooter>
                 </Card>)}
             </div>
-          </> : <div className="space-y-6">
+          </>
+        ) : (
+          <div className="space-y-6">
             <div className="flex justify-between">
               <div>
                 <h2 className="text-2xl font-bold">{activeDeck.name}</h2>
@@ -239,13 +245,24 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
-                        <BarChart data={memoryCurveData}>
-                          <XAxis dataKey="cost" />
-                          <YAxis />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Bar dataKey="count" fill="var(--color-count)" />
-                        </BarChart>
+                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={memoryCurveData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                            <XAxis 
+                              dataKey="cost" 
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 12 }}
+                            />
+                            <YAxis 
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 12 }}
+                            />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
                       </ChartContainer>
                     </CardContent>
                   </Card>
@@ -255,22 +272,24 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">Colors</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
-                        <PieChart>
-                          <Pie
-                            data={colorData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={20}
-                            outerRadius={50}
-                            dataKey="value"
-                          >
-                            {colorData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
+                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={colorData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={30}
+                              outerRadius={80}
+                              dataKey="value"
+                            >
+                              {colorData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </ChartContainer>
                     </CardContent>
                   </Card>
@@ -280,22 +299,24 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">DP Distribution</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
-                        <PieChart>
-                          <Pie
-                            data={dpData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={20}
-                            outerRadius={50}
-                            dataKey="value"
-                          >
-                            {dpData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
+                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={dpData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={30}
+                              outerRadius={80}
+                              dataKey="value"
+                            >
+                              {dpData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </ChartContainer>
                     </CardContent>
                   </Card>
@@ -305,22 +326,24 @@ const DeckBuilder = () => {
                       <CardTitle className="text-sm font-medium">Card Types</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[120px] w-full">
-                        <PieChart>
-                          <Pie
-                            data={typeData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={20}
-                            outerRadius={50}
-                            dataKey="value"
-                          >
-                            {typeData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
+                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={typeData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={30}
+                              outerRadius={80}
+                              dataKey="value"
+                            >
+                              {typeData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                          </PieChart>
+                        </ResponsiveContext>
                       </ChartContainer>
                     </CardContent>
                   </Card>
@@ -348,7 +371,8 @@ const DeckBuilder = () => {
                 </div>
               </TabsContent>
             </Tabs>
-          </div>}
+          </div>
+        )}
 
         <CardDetail card={selectedCard} isOpen={isCardDetailOpen} onClose={closeCardDetail} onAddToDeck={handleAddToDeck} context={cardDetailContext} />
       </div>
