@@ -69,7 +69,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, onClick, compact = false }) =
         </Badge>
       </div>
       
-      {card.quantity > 1 && (
+      {card.quantity && card.quantity > 1 && (
         <div className="absolute top-2 left-2 z-10">
           <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
             x{card.quantity}

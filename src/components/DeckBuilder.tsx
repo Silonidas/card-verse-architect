@@ -102,18 +102,36 @@ const DeckBuilder = () => {
     return acc;
   }, {} as Record<string, CardType[]>);
 
-  // Prepare chart data - Updated memory curve
+  // Prepare chart data - Fixed memory curve with proper data calculation
   const memoryCurveData = [
-    { cost: '0', count: deckCards.filter(c => c.manaCost === '0').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '1', count: deckCards.filter(c => c.manaCost === '1').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '2', count: deckCards.filter(c => c.manaCost === '2').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '3', count: deckCards.filter(c => c.manaCost === '3').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '4', count: deckCards.filter(c => c.manaCost === '4').reduce((sum, card) => sum + card.quantity, 0) },
-    { cost: '5', count: deckCards.filter(c => c.manaCost === '5').reduce((sum, card) => sum + card.quantity, 0) },
+    { cost: '0', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 0;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
+    { cost: '1', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 1;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
+    { cost: '2', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 2;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
+    { cost: '3', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 3;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
+    { cost: '4', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 4;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
+    { cost: '5', count: deckCards.filter(c => {
+      const cost = parseInt(c.manaCost || '0');
+      return cost === 5;
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
     { cost: '6+', count: deckCards.filter(c => {
       const cost = parseInt(c.manaCost || '0');
       return cost >= 6;
-    }).reduce((sum, card) => sum + card.quantity, 0) },
+    }).reduce((sum, card) => sum + (card.quantity || 1), 0) },
   ];
 
   const colorData = [
@@ -239,15 +257,15 @@ const DeckBuilder = () => {
                 <TabsTrigger value="add">Add Cards</TabsTrigger>
               </TabsList>
               <TabsContent value="deck" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="md:col-span-2">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                      <ChartContainer config={chartConfig} className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={memoryCurveData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                          <BarChart data={memoryCurveData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                             <XAxis 
                               dataKey="cost" 
                               axisLine={false}
@@ -260,7 +278,7 @@ const DeckBuilder = () => {
                               tick={{ fontSize: 12 }}
                             />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
+                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </ChartContainer>
