@@ -6,7 +6,7 @@ import CardDetail from "./CardDetail";
 import DeckDropZone from "./DeckDropZone";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, BookOpen } from "lucide-react";
+import { Search, Plus, BookOpen, Grid, List, Filter } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,7 @@ const DeckBuilder = () => {
   const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
   const [deckCards, setDeckCards] = useState<CardType[]>([]);
   const [cardDetailContext, setCardDetailContext] = useState<'browse' | 'deck' | 'collection'>('browse');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   React.useEffect(() => {
     if (activeDeck) {
       setDeckCards([...activeDeck.cards]);
@@ -173,11 +174,25 @@ const DeckBuilder = () => {
     value: { label: "Value", color: "hsl(var(--chart-2))" }
   };
 
-  return <DeckDropZone onCardDrop={handleCardDrop}>
-      <div className="space-y-6">
+  // Helper function to get card color based on type/name
+  const getCardColor = (card: CardType) => {
+    if (card.name.toLowerCase().includes('red') || card.type === 'digimon') return '#ef4444';
+    if (card.name.toLowerCase().includes('blue') || card.type === 'tamer') return '#3b82f6';
+    if (card.name.toLowerCase().includes('green') || card.type === 'option') return '#22c55e';
+    if (card.name.toLowerCase().includes('yellow')) return '#eab308';
+    if (card.name.toLowerCase().includes('purple')) return '#a855f7';
+    return '#64748b'; // default gray
+  };
+
+  const totalCards = deckCards.reduce((sum, card) => sum + card.quantity, 0);
+
+  return (
+    <DeckDropZone onCardDrop={handleCardDrop}>
+      <div className="min-h-screen bg-background">
         {!activeDeck ? (
+          // Deck Selection View
           <>
-            <div className="flex justify-between">
+            <div className="flex justify-between p-4 border-b">
               <h2 className="text-2xl font-bold">My Decks</h2>
               <Dialog open={isCreateDeckOpen} onOpenChange={setIsCreateDeckOpen}>
                 <DialogTrigger asChild>
@@ -208,198 +223,197 @@ const DeckBuilder = () => {
               </Dialog>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sampleDecks.map(deck => <Card key={deck.id} className="cursor-pointer overflow-hidden" onClick={() => handleDeckClick(deck)}>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sampleDecks.map(deck => (
+                <Card key={deck.id} className="cursor-pointer overflow-hidden" onClick={() => handleDeckClick(deck)}>
                   <div className="aspect-video w-full overflow-hidden bg-muted">
-                    {deck.coverCard && <img src={sampleCards.find(c => c.id === deck.coverCard)?.imageUrl} alt={deck.name} className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />}
+                    {deck.coverCard && (
+                      <img 
+                        src={sampleCards.find(c => c.id === deck.coverCard)?.imageUrl} 
+                        alt={deck.name} 
+                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" 
+                      />
+                    )}
                   </div>
                   <CardHeader>
                     <CardTitle>{deck.name}</CardTitle>
                     <CardDescription>{deck.format}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      {deck.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{deck.description}</p>
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <div className="flex items-center text-sm text-muted-foreground">
                       <BookOpen className="mr-1 h-4 w-4" />
                       {deck.cards.length} cards
                     </div>
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
+                    <Button variant="ghost" size="sm">Edit</Button>
                   </CardFooter>
-                </Card>)}
+                </Card>
+              ))}
             </div>
           </>
         ) : (
-          <div className="space-y-6">
-            <div className="flex justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{activeDeck.name}</h2>
-                <p className="text-muted-foreground">
-                  {activeDeck.format} • {deckCards.length} cards
-                </p>
+          // Main Deck Builder View
+          <div className="flex min-h-screen">
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col">
+              {/* Header */}
+              <div className="flex justify-between items-center p-4 border-b bg-card">
+                <div>
+                  <h2 className="text-xl font-bold">Unsaved deck</h2>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>{totalCards} cards</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm">
+                    <Filter className="h-4 w-4" />
+                    Filters
+                  </Button>
+                  <div className="flex rounded border">
+                    <Button
+                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('grid')}
+                      className="rounded-r-none"
+                    >
+                      <Grid className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === 'list' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      className="rounded-l-none"
+                    >
+                      <List className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <Button variant="outline" onClick={() => setActiveDeck(null)}>
+                    Back to Decks
+                  </Button>
+                </div>
               </div>
-              <div className="flex space-x-2">
-                <Button variant="outline" onClick={() => setActiveDeck(null)}>
-                  Back to Decks
-                </Button>
-                <Button>Save Deck</Button>
+
+              {/* Cards Display */}
+              <div className="flex-1 p-4 overflow-auto">
+                {viewMode === 'grid' ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                    {sampleCards.map(card => (
+                      <DragDropCard 
+                        key={card.id} 
+                        card={card} 
+                        onClick={() => handleCardClick(card, 'browse')} 
+                        isDraggable={true} 
+                        isInDeck={false} 
+                        compact={true} 
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {sampleCards.map(card => (
+                      <div 
+                        key={card.id}
+                        className="flex items-center gap-3 p-2 hover:bg-muted rounded cursor-pointer"
+                        onClick={() => handleCardClick(card, 'browse')}
+                      >
+                        <img 
+                          src={card.imageUrl} 
+                          alt={card.name}
+                          className="w-8 h-10 object-cover rounded"
+                        />
+                        <div className="flex-1 text-sm">{card.name}</div>
+                        <div className="text-xs text-muted-foreground">{card.manaCost || '0'}</div>
+                        <div className="text-xs text-muted-foreground">{card.power || 'N/A'}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            <Tabs defaultValue="deck" className="w-full">
-              <TabsList>
-                <TabsTrigger value="deck">Deck Content</TabsTrigger>
-                <TabsTrigger value="add">Add Cards</TabsTrigger>
-              </TabsList>
-              <TabsContent value="deck" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Memory Curve</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={memoryCurveData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                            <XAxis 
-                              dataKey="cost" 
-                              axisLine={false}
-                              tickLine={false}
-                              tick={{ fontSize: 10 }}
-                            />
-                            <YAxis 
-                              axisLine={false}
-                              tickLine={false}
-                              tick={{ fontSize: 10 }}
-                            />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Colors</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={colorData}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={25}
-                              outerRadius={70}
-                              dataKey="value"
-                            >
-                              {colorData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
-                            </Pie>
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">DP Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[180px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={dpData}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={25}
-                              outerRadius={70}
-                              dataKey="value"
-                            >
-                              {dpData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
-                            </Pie>
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Card Types</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer config={chartConfig} className="h-[200px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={typeData}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={30}
-                              outerRadius={80}
-                              dataKey="value"
-                            >
-                              {typeData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
-                            </Pie>
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
+            {/* Right Sidebar */}
+            <div className="w-80 bg-card border-l flex flex-col">
+              {/* Collection Stats */}
+              <div className="p-4 border-b">
+                <div className="text-center mb-4">
+                  <div className="text-2xl font-bold text-green-500">0.0%</div>
+                  <div className="text-sm text-muted-foreground">Collection</div>
                 </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-red-500">Missing</div>
+                  <div className="text-sm text-muted-foreground">{sampleCards.length - deckCards.length} cards</div>
+                </div>
+              </div>
 
-                <div>
-                  {Object.entries(groupedCardsByType).map(([type, cards]) => (
-                    <div key={type} className="mb-6">
-                      <h3 className="font-bold text-lg mb-2 capitalize">{type} ({cards.length})</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {cards.map(card => (
-                          <DragDropCard 
-                            key={card.id} 
-                            card={card} 
-                            onClick={() => handleCardClick(card, 'deck')} 
-                            isDraggable={true} 
-                            isInDeck={true} 
-                            compact={true} 
-                          />
-                        ))}
+              {/* View Toggles */}
+              <div className="p-4 border-b">
+                <div className="flex gap-2 mb-2">
+                  <Button variant="default" size="sm" className="flex-1">Cards</Button>
+                  <Button variant="outline" size="sm" className="flex-1">Info</Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="flex-1">Menu</Button>
+                  <Button variant="outline" size="sm" className="flex-1">View</Button>
+                </div>
+              </div>
+
+              {/* Deck List */}
+              <div className="flex-1 overflow-auto">
+                <div className="p-4">
+                  <h3 className="font-medium mb-3">Characters <Badge variant="secondary">1</Badge></h3>
+                  <div className="space-y-2">
+                    {deckCards.map(card => (
+                      <div 
+                        key={card.id}
+                        className="flex items-center gap-2 p-2 rounded hover:bg-muted cursor-pointer"
+                        style={{ borderLeft: `4px solid ${getCardColor(card)}` }}
+                        onClick={() => handleCardClick(card, 'deck')}
+                      >
+                        <div 
+                          className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                          style={{ backgroundColor: getCardColor(card) }}
+                        >
+                          {card.manaCost || '0'}
+                        </div>
+                        <div className="flex-1 text-sm">{card.name}</div>
+                        <div className="text-xs bg-orange-500 text-white px-1 rounded">
+                          {card.quantity}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Lv{card.power ? Math.floor(parseInt(card.power) / 1000) : 1}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="add" className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <div className="relative flex-grow">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search cards to add..." className="pl-8" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                    ))}
                   </div>
                 </div>
 
-                <div className="card-grid">
-                  {filteredCards.map(card => <DragDropCard key={card.id} card={card} onClick={() => handleCardClick(card, 'deck')} isDraggable={true} isInDeck={false} />)}
+                {/* Memory Curve Chart */}
+                <div className="p-4 border-t">
+                  <h4 className="font-medium mb-2">Memory Curve</h4>
+                  <ChartContainer config={chartConfig} className="h-32 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={memoryCurveData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                        <XAxis 
+                          dataKey="cost" 
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fontSize: 10 }}
+                        />
+                        <YAxis 
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fontSize: 10 }}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
                 </div>
-              </TabsContent>
-            </Tabs>
+              </div>
+            </div>
           </div>
         )}
 
@@ -411,7 +425,8 @@ const DeckBuilder = () => {
           context={cardDetailContext} 
         />
       </div>
-    </DeckDropZone>;
+    </DeckDropZone>
+  );
 };
 
 export default DeckBuilder;
