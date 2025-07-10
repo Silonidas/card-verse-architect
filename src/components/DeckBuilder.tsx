@@ -24,6 +24,11 @@ const DeckBuilder = () => {
   const [deckCards, setDeckCards] = useState<CardType[]>([]);
   const [cardDetailContext, setCardDetailContext] = useState<'browse' | 'deck' | 'collection'>('browse');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // Form state for creating new deck
+  const [newDeckName, setNewDeckName] = useState("");
+  const [newDeckFormat, setNewDeckFormat] = useState("");
+  const [newDeckDescription, setNewDeckDescription] = useState("");
   React.useEffect(() => {
     if (activeDeck) {
       setDeckCards([...activeDeck.cards]);
@@ -92,6 +97,39 @@ const DeckBuilder = () => {
     if (!selectedCard) return;
     handleCardDrop(selectedCard, 'browse');
     closeCardDetail();
+  };
+
+  const handleCreateDeck = () => {
+    if (!newDeckName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a deck name",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newDeck: Deck = {
+      id: Date.now().toString(),
+      name: newDeckName,
+      format: newDeckFormat || "Standard",
+      description: newDeckDescription,
+      cards: []
+    };
+
+    setActiveDeck(newDeck);
+    setDeckCards([]);
+    setIsCreateDeckOpen(false);
+    
+    // Reset form
+    setNewDeckName("");
+    setNewDeckFormat("");
+    setNewDeckDescription("");
+
+    toast({
+      title: "Deck created!",
+      description: `${newDeck.name} has been created successfully`
+    });
   };
   const filteredCards = sampleCards.filter(card => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const groupedCardsByType = deckCards.reduce((acc, card) => {
@@ -207,17 +245,32 @@ const DeckBuilder = () => {
                   <div className="space-y-4 py-2">
                     <div className="space-y-2">
                       <label htmlFor="name">Deck Name</label>
-                      <Input id="name" placeholder="Enter deck name" />
+                      <Input 
+                        id="name" 
+                        placeholder="Enter deck name" 
+                        value={newDeckName}
+                        onChange={e => setNewDeckName(e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="format">Format</label>
-                      <Input id="format" placeholder="Standard, Modern, etc." />
+                      <Input 
+                        id="format" 
+                        placeholder="Standard, Modern, etc." 
+                        value={newDeckFormat}
+                        onChange={e => setNewDeckFormat(e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="description">Description (optional)</label>
-                      <Input id="description" placeholder="Describe your deck" />
+                      <Input 
+                        id="description" 
+                        placeholder="Describe your deck" 
+                        value={newDeckDescription}
+                        onChange={e => setNewDeckDescription(e.target.value)}
+                      />
                     </div>
-                    <Button className="w-full">Create Deck</Button>
+                    <Button className="w-full" onClick={handleCreateDeck}>Create Deck</Button>
                   </div>
                 </DialogContent>
               </Dialog>
