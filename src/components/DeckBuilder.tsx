@@ -256,27 +256,38 @@ const DeckBuilder = () => {
         ) : (
           // Main Deck Builder View
           <div className="flex min-h-screen">
-            {/* Main Content Area */}
+            {/* Left Sidebar - Card Catalog */}
             <div className="flex-1 flex flex-col">
-              {/* Header */}
-              <div className="flex justify-between items-center p-4 border-b bg-card">
-                <div>
-                  <h2 className="text-xl font-bold">Unsaved deck</h2>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>{totalCards} cards</span>
-                  </div>
+              {/* Search and Filters Header */}
+              <div className="flex items-center gap-4 p-4 border-b bg-card">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search..." 
+                    className="pl-10" 
+                    value={searchTerm} 
+                    onChange={e => setSearchTerm(e.target.value)} 
+                  />
                 </div>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                </Button>
+                <div className="text-sm text-muted-foreground">
+                  1867 cards
+                </div>
+              </div>
+
+              {/* View Controls */}
+              <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Filter className="h-4 w-4" />
-                    Filters
-                  </Button>
+                  <span className="text-sm">View</span>
                   <div className="flex rounded border">
                     <Button
                       variant={viewMode === 'grid' ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setViewMode('grid')}
-                      className="rounded-r-none"
+                      className="rounded-r-none px-3"
                     >
                       <Grid className="h-4 w-4" />
                     </Button>
@@ -284,48 +295,64 @@ const DeckBuilder = () => {
                       variant={viewMode === 'list' ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setViewMode('list')}
-                      className="rounded-l-none"
+                      className="rounded-l-none px-3"
                     >
                       <List className="h-4 w-4" />
                     </Button>
                   </div>
-                  <Button variant="outline" onClick={() => setActiveDeck(null)}>
-                    Back to Decks
-                  </Button>
                 </div>
+                <Button variant="outline" onClick={() => setActiveDeck(null)}>
+                  Back to Decks
+                </Button>
               </div>
 
               {/* Cards Display */}
-              <div className="flex-1 p-4 overflow-auto">
+              <div className="flex-1 p-4 overflow-auto bg-background">
                 {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                    {sampleCards.map(card => (
-                      <DragDropCard 
-                        key={card.id} 
-                        card={card} 
-                        onClick={() => handleCardClick(card, 'browse')} 
-                        isDraggable={true} 
-                        isInDeck={false} 
-                        compact={true} 
-                      />
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {filteredCards.map(card => (
+                      <div key={card.id} className="relative">
+                        <DragDropCard 
+                          card={card} 
+                          onClick={() => handleCardClick(card, 'browse')} 
+                          isDraggable={true} 
+                          isInDeck={false} 
+                          compact={false}
+                        />
+                        {/* Add to deck button */}
+                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                          <div className="bg-black/70 rounded px-1 text-xs text-white">
+                            0 / 4
+                          </div>
+                          <Button size="sm" variant="secondary" className="h-6 w-6 p-0">
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    {sampleCards.map(card => (
+                    {filteredCards.map(card => (
                       <div 
                         key={card.id}
-                        className="flex items-center gap-3 p-2 hover:bg-muted rounded cursor-pointer"
+                        className="flex items-center gap-3 p-2 hover:bg-muted rounded cursor-pointer border"
                         onClick={() => handleCardClick(card, 'browse')}
                       >
                         <img 
                           src={card.imageUrl} 
                           alt={card.name}
-                          className="w-8 h-10 object-cover rounded"
+                          className="w-12 h-16 object-cover rounded"
                         />
-                        <div className="flex-1 text-sm">{card.name}</div>
-                        <div className="text-xs text-muted-foreground">{card.manaCost || '0'}</div>
-                        <div className="text-xs text-muted-foreground">{card.power || 'N/A'}</div>
+                        <div className="flex-1">
+                          <div className="font-medium">{card.name}</div>
+                          <div className="text-sm text-muted-foreground">{card.set}</div>
+                        </div>
+                        <div className="text-sm font-medium">{card.manaCost || '0'}</div>
+                        <div className="text-sm text-muted-foreground">0/4</div>
+                        <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                          <Plus className="h-3 w-3" />
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -333,28 +360,44 @@ const DeckBuilder = () => {
               </div>
             </div>
 
-            {/* Right Sidebar */}
+            {/* Right Sidebar - Deck Construction */}
             <div className="w-80 bg-card border-l flex flex-col">
-              {/* Collection Stats */}
+              {/* Deck Header */}
               <div className="p-4 border-b">
                 <div className="text-center mb-4">
-                  <div className="text-2xl font-bold text-green-500">0.0%</div>
-                  <div className="text-sm text-muted-foreground">Collection</div>
+                  <div className="text-lg font-bold">Unsaved deck</div>
+                  <div className="text-sm text-muted-foreground">{totalCards} cards</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-red-500">Missing</div>
-                  <div className="text-sm text-muted-foreground">{sampleCards.length - deckCards.length} cards</div>
+                
+                {/* Collection Stats */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-green-500">0.0%</div>
+                    <div className="text-xs text-muted-foreground">Collection</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-muted-foreground">Missing</div>
+                    <div className="text-xs text-muted-foreground">{filteredCards.length} cards</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 mb-2">
+                  <div className="w-3 h-3 bg-muted rounded-full"></div>
+                  <span className="text-sm">Highlight</span>
                 </div>
               </div>
 
-              {/* View Toggles */}
+              {/* Deck Navigation */}
               <div className="p-4 border-b">
                 <div className="flex gap-2 mb-2">
+                  <Button variant="outline" size="sm" className="flex-1">Menu</Button>
                   <Button variant="default" size="sm" className="flex-1">Cards</Button>
                   <Button variant="outline" size="sm" className="flex-1">Info</Button>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">Menu</Button>
+                  <Button variant="outline" size="sm" className="flex-1">Layout</Button>
+                  <Button variant="outline" size="sm" className="flex-1">Group by</Button>
+                  <Button variant="outline" size="sm" className="flex-1">Sort by</Button>
                   <Button variant="outline" size="sm" className="flex-1">View</Button>
                 </div>
               </div>
@@ -362,56 +405,71 @@ const DeckBuilder = () => {
               {/* Deck List */}
               <div className="flex-1 overflow-auto">
                 <div className="p-4">
-                  <h3 className="font-medium mb-3">Characters <Badge variant="secondary">1</Badge></h3>
-                  <div className="space-y-2">
+                  <h3 className="font-medium mb-3 flex items-center gap-2">
+                    Characters 
+                    <Badge variant="secondary" className="bg-orange-500 text-white">{deckCards.length}</Badge>
+                  </h3>
+                  
+                  <div className="space-y-1">
                     {deckCards.map(card => (
                       <div 
                         key={card.id}
-                        className="flex items-center gap-2 p-2 rounded hover:bg-muted cursor-pointer"
-                        style={{ borderLeft: `4px solid ${getCardColor(card)}` }}
+                        className="flex items-center gap-2 p-2 rounded hover:bg-muted cursor-pointer border-l-4"
+                        style={{ borderLeftColor: getCardColor(card) }}
                         onClick={() => handleCardClick(card, 'deck')}
                       >
                         <div 
-                          className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                          className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
                           style={{ backgroundColor: getCardColor(card) }}
                         >
                           {card.manaCost || '0'}
                         </div>
-                        <div className="flex-1 text-sm">{card.name}</div>
-                        <div className="text-xs bg-orange-500 text-white px-1 rounded">
-                          {card.quantity}
+                        <div className="flex-1 text-sm truncate">{card.name}</div>
+                        <div className="text-xs bg-green-500 text-white px-1 rounded">
+                          Search
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          Lv{card.power ? Math.floor(parseInt(card.power) / 1000) : 1}
+                        <div className="text-xs bg-orange-500 text-white px-1 rounded font-medium">
+                          {card.quantity} / 4
+                        </div>
+                        <div className="text-xs bg-orange-500 text-white px-1 rounded">
+                          {card.manaCost || '0'}
                         </div>
                       </div>
                     ))}
                   </div>
+
+                  {deckCards.length === 0 && (
+                    <div className="text-center text-muted-foreground text-sm py-8">
+                      No cards in deck. Drag cards here to add them.
+                    </div>
+                  )}
                 </div>
 
                 {/* Memory Curve Chart */}
-                <div className="p-4 border-t">
-                  <h4 className="font-medium mb-2">Memory Curve</h4>
-                  <ChartContainer config={chartConfig} className="h-32 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={memoryCurveData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                        <XAxis 
-                          dataKey="cost" 
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fontSize: 10 }}
-                        />
-                        <YAxis 
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fontSize: 10 }}
-                        />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
+                {deckCards.length > 0 && (
+                  <div className="p-4 border-t">
+                    <h4 className="font-medium mb-2">Memory Curve</h4>
+                    <ChartContainer config={chartConfig} className="h-24 w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={memoryCurveData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                          <XAxis 
+                            dataKey="cost" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10 }}
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10 }}
+                          />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={[1, 1, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  </div>
+                )}
               </div>
             </div>
           </div>
