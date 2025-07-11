@@ -25,6 +25,7 @@ export interface Card {
   description?: string;
   power?: string;
   toughness?: string;
+  level?: string;
   quantity: number;
   condition?: CardCondition;
   favorite?: boolean;
