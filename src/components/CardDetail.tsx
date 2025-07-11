@@ -111,11 +111,11 @@ const CardDetail: React.FC<CardDetailProps> = ({
       case 'deck':
         return { text: 'Add to Deck', action: onAddToDeck };
       case 'browse':
-        return { text: 'Add to Collection', action: onAddToDeck };
+        return null; // No add button for browse view in deck builder
       case 'collection':
         return null; // No add button for collection view
       default:
-        return { text: 'Add to Collection', action: onAddToDeck };
+        return null;
     }
   };
 
