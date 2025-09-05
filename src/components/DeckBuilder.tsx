@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCards } from "@/lib/api";
+import { useDecks } from "@/contexts/DeckContext";
 import { Card as CardType, Deck } from "@/types";
-import { sampleCards, sampleDecks } from "@/data/sampleCards";
 import DragDropCard from "./DragDropCard";
 import CardDetail from "./CardDetail";
 import DeckDropZone from "./DeckDropZone";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, BookOpen, Minus, Filter, Grid, List } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 
 const DeckBuilder = () => {
+  const { decks, createDeck, addCardToDeck, removeCardFromDeck } = useDecks();
+  const { data: cards, isLoading, error } = useQuery<CardType[]>({
+    queryKey: ["cards"],
+    queryFn: getCards,
+  });
+
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterRarity, setFilterRarity] = useState("all");
   const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
   const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
-  const [deckCards, setDeckCards] = useState<{[key: string]: number}>({});
   const [cardDetailContext, setCardDetailContext] = useState<'browse' | 'deck' | 'collection'>('browse');
   const [deckViewMode, setDeckViewMode] = useState<'grid' | 'list'>('grid');
-  
+
   // Form state for creating new deck
   const [newDeckName, setNewDeckName] = useState("");
   const [newDeckFormat, setNewDeckFormat] = useState("");
@@ -39,45 +49,17 @@ const DeckBuilder = () => {
 
   const handleDeckClick = (deck: Deck) => {
     setActiveDeck(deck);
-    // Initialize deck cards from the deck
-    const initialCards: {[key: string]: number} = {};
-    deck.cards.forEach(card => {
-      initialCards[card.id] = card.quantity || 1;
-    });
-    setDeckCards(initialCards);
   };
 
   const handleAddCard = (card: CardType) => {
-    const currentCount = deckCards[card.id] || 0;
-    if (currentCount < 4) {
-      setDeckCards(prev => ({
-        ...prev,
-        [card.id]: currentCount + 1
-      }));
-      toast({
-        title: "Card added to deck",
-        description: `${card.name}: ${currentCount + 1} copies in deck`
-      });
+    if (activeDeck) {
+      addCardToDeck(activeDeck.id, card);
     }
   };
 
   const handleRemoveCard = (card: CardType) => {
-    const currentCount = deckCards[card.id] || 0;
-    if (currentCount > 0) {
-      if (currentCount === 1) {
-        const newDeckCards = { ...deckCards };
-        delete newDeckCards[card.id];
-        setDeckCards(newDeckCards);
-      } else {
-        setDeckCards(prev => ({
-          ...prev,
-          [card.id]: currentCount - 1
-        }));
-      }
-      toast({
-        title: "Card removed from deck",
-        description: `${card.name}: ${Math.max(0, currentCount - 1)} copies in deck`
-      });
+    if (activeDeck) {
+      removeCardFromDeck(activeDeck.id, card.id);
     }
   };
 
@@ -91,49 +73,45 @@ const DeckBuilder = () => {
       return;
     }
 
-    const newDeck: Deck = {
-      id: Date.now().toString(),
+    createDeck({
       name: newDeckName,
       format: newDeckFormat || "Standard",
       description: newDeckDescription,
-      cards: []
-    };
+    });
 
-    setActiveDeck(newDeck);
-    setDeckCards({});
     setIsCreateDeckOpen(false);
     
     // Reset form
     setNewDeckName("");
     setNewDeckFormat("");
     setNewDeckDescription("");
-
-    toast({
-      title: "Deck created!",
-      description: `${newDeck.name} has been created successfully`
-    });
   };
 
-  const filteredCards = sampleCards.filter(card => 
-    card.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const cardTypes = Array.from(new Set(cards?.map((card) => card.type) || []));
+  const rarities = Array.from(new Set(cards?.map((card) => card.rarity) || []));
+
+  const filteredCards = cards?.filter(card => {
+    const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "all" || card.type.toLowerCase() === filterType;
+    const matchesRarity = filterRarity === "all" || card.rarity.toLowerCase() === filterRarity;
+    return matchesSearch && matchesType && matchesRarity;
+  }) || [];
 
   // Helper function to get card color based on type/name
   const getCardColor = (card: CardType) => {
-    if (card.name.toLowerCase().includes('red') || card.type === 'digimon') return '#ef4444';
-    if (card.name.toLowerCase().includes('blue') || card.type === 'tamer') return '#3b82f6';
-    if (card.name.toLowerCase().includes('green') || card.type === 'option') return '#22c55e';
-    if (card.name.toLowerCase().includes('yellow')) return '#eab308';
-    if (card.name.toLowerCase().includes('purple')) return '#a855f7';
+    if (card.color?.toLowerCase().includes('red')) return '#ef4444';
+    if (card.color?.toLowerCase().includes('blue')) return '#3b82f6';
+    if (card.color?.toLowerCase().includes('green')) return '#22c55e';
+    if (card.color?.toLowerCase().includes('yellow')) return '#eab308';
+    if (card.color?.toLowerCase().includes('purple')) return '#a855f7';
+    if (card.color?.toLowerCase().includes('black')) return '#000000';
     return '#64748b'; // default gray
   };
 
-  // Get deck cards with their quantities
   const getDeckCardsList = () => {
-    return Object.entries(deckCards).map(([cardId, quantity]) => {
-      const card = sampleCards.find(c => c.id === cardId);
-      return card ? { ...card, quantity } : null;
-    }).filter(Boolean) as (CardType & { quantity: number })[];
+    if (!activeDeck) return [];
+    const deck = decks.find(d => d.id === activeDeck.id);
+    return deck ? deck.cards : [];
   };
 
   // Group deck cards by type
@@ -146,7 +124,25 @@ const DeckBuilder = () => {
     return acc;
   }, {} as Record<string, (CardType & { quantity: number })[]>);
 
-  const totalCards = Object.values(deckCards).reduce((sum, count) => sum + count, 0);
+  const totalCards = getDeckCardsList().reduce((sum, card) => sum + (card.quantity || 0), 0);
+
+  const manaCurveData = getDeckCardsList().reduce((acc, card) => {
+    const cost = parseInt(card.play_cost || "0");
+    const existing = acc.find(item => item.cost === cost);
+    if (existing) {
+      existing.count += card.quantity || 1;
+    } else {
+      acc.push({ cost, count: card.quantity || 1 });
+    }
+    return acc;
+  }, [] as { cost: number; count: number }[]).sort((a, b) => a.cost - b.cost);
+
+  const typeDistributionData = Object.entries(groupedDeckCards).map(([type, cards]) => ({
+    name: type,
+    value: cards.reduce((sum, card) => sum + (card.quantity || 0), 0),
+  }));
+
+  const COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#000000', '#64748b'];
 
   return (
     <DeckDropZone onCardDrop={() => {}}>
@@ -201,16 +197,14 @@ const DeckBuilder = () => {
             </div>
 
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sampleDecks.map(deck => (
+              {decks.map(deck => (
                 <Card key={deck.id} className="cursor-pointer overflow-hidden" onClick={() => handleDeckClick(deck)}>
                   <div className="aspect-video w-full overflow-hidden bg-muted">
-                    {deck.coverCard && (
-                      <img 
-                        src={sampleCards.find(c => c.id === deck.coverCard)?.imageUrl} 
-                        alt={deck.name} 
-                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" 
-                      />
-                    )}
+                    <img
+                      src={deck.coverCard ? cards?.find(c => c.id === deck.coverCard)?.imageUrl : (deck.cards.length > 0 ? deck.cards[0].imageUrl : 'https://placehold.co/300x400/000000/FFFFFF?text=No+Image')}
+                      alt={deck.name}
+                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
                   </div>
                   <CardHeader>
                     <CardTitle>{deck.name}</CardTitle>
@@ -246,10 +240,32 @@ const DeckBuilder = () => {
                     onChange={e => setSearchTerm(e.target.value)} 
                   />
                 </div>
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filter
-                </Button>
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    {cardTypes.map((type) => (
+                      <SelectItem key={type} value={type.toLowerCase()} className="capitalize">
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={filterRarity} onValueChange={setFilterRarity}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Rarities" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Rarities</SelectItem>
+                    {rarities.map((rarity) => (
+                      <SelectItem key={rarity} value={rarity.toLowerCase()} className="capitalize">
+                        {rarity}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Cards Grid */}
@@ -273,7 +289,7 @@ const DeckBuilder = () => {
                         {/* Cost and Level badges in corners */}
                         <div className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
                              style={{ backgroundColor: getCardColor(card) }}>
-                          {card.manaCost || '0'}
+                          {card.play_cost || '0'}
                         </div>
                         
                         {card.level && (
@@ -287,12 +303,12 @@ const DeckBuilder = () => {
                           <div className="flex items-center justify-between">
                             {/* Counter */}
                             <div className="bg-black/70 rounded px-2 py-1 text-xs text-white font-medium">
-                              {deckCards[card.id] || 0} / 4
+                              {activeDeck?.cards.find(c => c.id === card.id)?.quantity || 0} / 4
                             </div>
                             
                             {/* Add/Remove buttons */}
                             <div className="flex gap-1">
-                              {(deckCards[card.id] || 0) > 0 && (
+                              {(activeDeck?.cards.find(c => c.id === card.id)?.quantity || 0) > 0 && (
                                 <Button 
                                   size="sm" 
                                   variant="secondary" 
@@ -313,7 +329,7 @@ const DeckBuilder = () => {
                                   e.stopPropagation();
                                   handleAddCard(card);
                                 }}
-                                disabled={(deckCards[card.id] || 0) >= 4}
+                                disabled={(activeDeck?.cards.find(c => c.id === card.id)?.quantity || 0) >= 4}
                               >
                                 <Plus className="h-3 w-3" />
                               </Button>
@@ -340,10 +356,7 @@ const DeckBuilder = () => {
                 </div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-sm text-muted-foreground">
-                    Charaktere {Object.entries(deckCards).filter(([id]) => {
-                      const card = sampleCards.find(c => c.id === id);
-                      return card?.type === 'digimon';
-                    }).reduce((sum, [, count]) => sum + count, 0)}
+                    Charaktere {getDeckCardsList().filter(c => c.type === 'digimon').reduce((sum, card) => sum + (card.quantity || 0), 0)}
                   </div>
                   <div className="flex rounded border">
                     <Button
@@ -395,7 +408,7 @@ const DeckBuilder = () => {
                                 {/* Cost and Level badges in corners */}
                                 <div className="absolute top-1 left-1 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold text-white"
                                      style={{ backgroundColor: getCardColor(card) }}>
-                                  {card.manaCost || '0'}
+                                  {card.play_cost || '0'}
                                 </div>
                                 
                                 {card.level && (
@@ -471,7 +484,7 @@ const DeckBuilder = () => {
                                     className="w-3 h-3 rounded-full"
                                     style={{ backgroundColor: getCardColor(card) }}
                                   ></span>
-                                  <span>Cost: {card.manaCost || '0'}</span>
+                                  <span>Cost: {card.play_cost || '0'}</span>
                                   {card.level && <span>Lv.{card.level}</span>}
                                 </div>
                               </div>
@@ -519,6 +532,30 @@ const DeckBuilder = () => {
                     <span>Total Cards:</span>
                     <span className="font-medium">{totalCards}</span>
                   </div>
+                </div>
+                <div className="mt-4">
+                  <h4 className="font-medium text-sm text-muted-foreground mb-2 uppercase">Mana Curve</h4>
+                  <ResponsiveContainer width="100%" height={100}>
+                    <BarChart data={manaCurveData}>
+                      <XAxis dataKey="cost" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-4">
+                  <h4 className="font-medium text-sm text-muted-foreground mb-2 uppercase">Type Distribution</h4>
+                  <ResponsiveContainer width="100%" height={100}>
+                    <PieChart>
+                      <Pie data={typeDistributionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={40} fill="#8884d8">
+                        {typeDistributionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>

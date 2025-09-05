@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { sampleCards } from "@/data/sampleCards";
+import { useCollection } from "@/contexts/CollectionContext";
 import CardDetail from "./CardDetail";
 import { Card, TCGType } from "@/types";
 import CollectionStats from "./collection/CollectionStats";
@@ -16,11 +16,10 @@ const Collection = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
   const [showFavorites, setShowFavorites] = useState(false);
-  // Using a state copy of cards to allow modifications
-  const [cards, setCards] = useState<Card[]>(sampleCards);
+  const { collection } = useCollection();
   
   // Filter cards based on the current TCG
-  const tcgCards = cards.filter(card => card.tcg === currentTCG);
+  const tcgCards = collection.filter(card => card.tcg === currentTCG);
   
   const filteredCards = tcgCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -50,10 +49,7 @@ const Collection = () => {
   };
 
   const handleUpdateCard = (updatedCard: Card) => {
-    const updatedCards = cards.map(card => 
-      card.id === updatedCard.id ? updatedCard : card
-    );
-    setCards(updatedCards);
+    // This will be handled by the context, but we need to pass a function to CardDetail
   };
 
   // Listen for TCG changes from Layout component
@@ -102,6 +98,7 @@ const Collection = () => {
         isOpen={isCardDetailOpen}
         onClose={closeCardDetail}
         onUpdateCard={handleUpdateCard}
+        context="collection"
       />
     </>
   );

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { sampleCards } from "@/data/sampleCards";
+import { useQuery } from "@tanstack/react-query";
+import { getCards } from "@/lib/api";
+import { useCollection } from "@/contexts/CollectionContext";
 import { Card, TCGType } from "@/types";
 import DragDropCard from "./DragDropCard";
 import CardDetail from "./CardDetail";
@@ -14,27 +16,33 @@ import {
 } from "./ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 const CardBrowser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterRarity, setFilterRarity] = useState("all");
-  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game 2020");
+  const [currentTCG, setCurrentTCG] = useState<TCGType>("Digimon Card Game");
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isCardDetailOpen, setIsCardDetailOpen] = useState(false);
-  const [collectionCards, setCollectionCards] = useState<Card[]>([]);
-  
+  const { addToCollection } = useCollection();
+
+  const { data: cards, isLoading, error } = useQuery<Card[]>({
+    queryKey: ["cards"],
+    queryFn: getCards,
+  });
+
   // Filter cards based on the current TCG first
-  const tcgCards = sampleCards.filter(card => card.tcg === currentTCG);
-  
+  const tcgCards = cards?.filter(card => card.tcg === currentTCG) || [];
+
   // Use the dynamic card types from the data
-  const cardTypes = ["digimon", "tamer", "option"];
+  const cardTypes = Array.from(new Set(tcgCards.map((card) => card.type)));
   const rarities = Array.from(new Set(tcgCards.map((card) => card.rarity)));
 
   const filteredCards = tcgCards.filter((card) => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === "all" || card.type === filterType;
-    const matchesRarity = filterRarity === "all" || card.rarity === filterRarity;
+    const matchesType = filterType === "all" || card.type.toLowerCase() === filterType;
+    const matchesRarity = filterRarity === "all" || card.rarity.toLowerCase() === filterRarity;
     return matchesSearch && matchesType && matchesRarity;
   });
 
@@ -54,34 +62,8 @@ const CardBrowser = () => {
   };
 
   const handleAddToCollection = () => {
-    if (!selectedCard) return;
-
-    const existingCard = collectionCards.find(card => card.id === selectedCard.id);
-    
-    if (existingCard) {
-      // If card exists, increment quantity
-      const updatedCards = collectionCards.map(card =>
-        card.id === selectedCard.id
-          ? { ...card, quantity: card.quantity + 1 }
-          : card
-      );
-      setCollectionCards(updatedCards);
-      toast({
-        title: "Card added",
-        description: `${selectedCard.name}: ${existingCard.quantity + 1} in collection`,
-      });
-    } else {
-      // If card doesn't exist, add it with quantity 1
-      const newCard = {
-        ...selectedCard,
-        quantity: 1,
-        condition: "near mint" as const
-      };
-      setCollectionCards([...collectionCards, newCard]);
-      toast({
-        title: "Card added to collection",
-        description: `${selectedCard.name} added to your collection`,
-      });
+    if (selectedCard) {
+      addToCollection(selectedCard);
     }
   };
 
@@ -94,11 +76,32 @@ const CardBrowser = () => {
     };
 
     window.addEventListener('tcgChanged', handleTCGChange as EventListener);
-    
+
     return () => {
       window.removeEventListener('tcgChanged', handleTCGChange as EventListener);
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          <Skeleton className="h-10 w-full" />
+          <div className="grid grid-cols-2 md:flex gap-2">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </div>
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {[...Array(12)].map((_, i) => <Skeleton key={i} className="h-60" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error fetching cards: {error.message}</div>;
+  }
 
   if (filteredCards.length === 0) {
     return (
@@ -122,7 +125,7 @@ const CardBrowser = () => {
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
                   {cardTypes.map((type) => (
-                    <SelectItem key={type} value={type} className="capitalize">
+                    <SelectItem key={type} value={type.toLowerCase()} className="capitalize">
                       {type}
                     </SelectItem>
                   ))}
@@ -135,7 +138,7 @@ const CardBrowser = () => {
                 <SelectContent>
                   <SelectItem value="all">All Rarities</SelectItem>
                   {rarities.map((rarity) => (
-                    <SelectItem key={rarity} value={rarity} className="capitalize">
+                    <SelectItem key={rarity} value={rarity.toLowerCase()} className="capitalize">
                       {rarity}
                     </SelectItem>
                   ))}
@@ -184,7 +187,7 @@ const CardBrowser = () => {
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
                 {cardTypes.map((type) => (
-                  <SelectItem key={type} value={type} className="capitalize">
+                  <SelectItem key={type} value={type.toLowerCase()} className="capitalize">
                     {type}
                   </SelectItem>
                 ))}
@@ -197,7 +200,7 @@ const CardBrowser = () => {
               <SelectContent>
                 <SelectItem value="all">All Rarities</SelectItem>
                 {rarities.map((rarity) => (
-                  <SelectItem key={rarity} value={rarity} className="capitalize">
+                  <SelectItem key={rarity} value={rarity.toLowerCase()} className="capitalize">
                     {rarity}
                   </SelectItem>
                 ))}

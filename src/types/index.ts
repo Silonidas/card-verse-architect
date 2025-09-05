@@ -14,21 +14,23 @@ export type CardCondition = "mint" | "near mint" | "excellent" | "good" | "playe
 export type TCGType = string;
 
 export interface Card {
-  id: string;
+  id: string; // This will be the cardnumber
   name: string;
   imageUrl: string;
-  type: CardType;
-  rarity: CardRarity;
-  set: string;
-  tcg: TCGType;
-  manaCost?: string;
-  description?: string;
-  power?: string;
-  toughness?: string;
+  type: string;
+  rarity: string;
+  set?: string; // This is in the set_name array
+  tcg: string; // This is the series
+  play_cost?: string;
+  main_effect?: string;
+  source_effect?: string;
+  dp?: string;
   level?: string;
-  quantity: number;
+  quantity?: number; // This will be managed in the frontend
   condition?: CardCondition;
   favorite?: boolean;
+  color?: string;
+  cardnumber: string;
 }
 
 export interface Deck {

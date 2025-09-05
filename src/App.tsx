@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { CollectionProvider } from "@/contexts/CollectionContext";
+import { DeckProvider } from "@/contexts/DeckContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
@@ -23,32 +25,36 @@ const App = () => (
       <Sonner />
       <ThemeProvider>
         <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/browse" element={
-                <ProtectedRoute>
-                  <Browse />
-                </ProtectedRoute>
-              } />
-              <Route path="/decks" element={
-                <ProtectedRoute>
-                  <Decks />
-                </ProtectedRoute>
-              } />
-              <Route path="/collection" element={
-                <ProtectedRoute>
-                  <CollectionPage />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <DeckProvider>
+            <CollectionProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={
+                    <ProtectedRoute>
+                      <Index />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/browse" element={
+                    <ProtectedRoute>
+                      <Browse />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/decks" element={
+                    <ProtectedRoute>
+                      <Decks />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/collection" element={
+                    <ProtectedRoute>
+                      <CollectionPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </CollectionProvider>
+          </DeckProvider>
         </AuthProvider>
       </ThemeProvider>
     </TooltipProvider>
